@@ -1,5 +1,5 @@
 {
-  "name": "sistema-nota-fiscal",
+  "name": "my-project",
   "private": true,
   "version": "0.1.0",
   "description": "A Strapi application",
@@ -20,7 +20,7 @@
     "name": "A Strapi developer"
   },
   "strapi": {
-    "uuid": "461dc3f4-43d2-4f5e-ab01-37019216c77a"
+    "uuid": "51ef9dc1-ea6e-4c27-953e-7d99502674ec"
   },
   "engines": {
     "node": ">=12.x.x <=16.x.x",
