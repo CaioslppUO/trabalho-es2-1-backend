@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "clientes",
+  "info": {
+    "singularName": "cliente",
+    "pluralName": "clientes",
+    "displayName": "Cliente",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255,
+      "minLength": 1
+    },
+    "email": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255,
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "maxLength": 45,
+      "required": true,
+      "minLength": 1
+    },
+    "celular": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::celular.celular",
+      "inversedBy": "clientes"
+    }
+  }
+}

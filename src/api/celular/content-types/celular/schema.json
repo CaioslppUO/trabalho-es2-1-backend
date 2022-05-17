@@ -4,7 +4,8 @@
   "info": {
     "singularName": "celular",
     "pluralName": "celulars",
-    "displayName": "Celular"
+    "displayName": "Celular",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,8 +14,15 @@
   "attributes": {
     "modelo": {
       "type": "string",
-      "maxLength": 45,
-      "required": true
+      "maxLength": 255,
+      "required": true,
+      "minLength": 1
+    },
+    "clientes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::cliente.cliente",
+      "mappedBy": "celular"
     }
   }
 }
