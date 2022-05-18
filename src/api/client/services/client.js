@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * celular service.
+ * client service.
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::celular.celular');
+module.exports = createCoreService('api::client.client');

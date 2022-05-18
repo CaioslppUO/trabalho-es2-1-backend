@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- *  cliente controller
+ *  client controller
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::cliente.cliente');
+module.exports = createCoreController('api::client.client');

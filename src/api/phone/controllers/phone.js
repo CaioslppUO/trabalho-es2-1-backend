@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- *  celular controller
+ *  phone controller
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::celular.celular');
+module.exports = createCoreController('api::phone.phone');
