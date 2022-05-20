@@ -4,7 +4,8 @@
   "info": {
     "singularName": "phone",
     "pluralName": "phones",
-    "displayName": "phone"
+    "displayName": "phone",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -22,6 +23,10 @@
       "relation": "manyToOne",
       "target": "api::client.client",
       "inversedBy": "phones"
+    },
+    "numero": {
+      "type": "string",
+      "required": true
     }
   }
 }
