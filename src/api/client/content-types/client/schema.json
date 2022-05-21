@@ -31,10 +31,10 @@
       "maxLength": 255,
       "minLength": 1
     },
-    "phones": {
+    "service_orders": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::phone.phone",
+      "target": "api::service-order.service-order",
       "mappedBy": "client"
     }
   }
