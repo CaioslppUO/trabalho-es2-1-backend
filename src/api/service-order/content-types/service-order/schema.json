@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "service_orders",
+  "info": {
+    "singularName": "service-order",
+    "pluralName": "service-orders",
+    "displayName": "ServiceOrder",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "canceled": {
+      "type": "boolean",
+      "default": false
+    },
+    "client": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::client.client",
+      "inversedBy": "service_orders"
+    },
+    "phone": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::phone.phone",
+      "inversedBy": "service_orders"
+    },
+    "services": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::service.service",
+      "mappedBy": "service_orders"
+    }
+  }
+}

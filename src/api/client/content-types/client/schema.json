@@ -4,8 +4,7 @@
   "info": {
     "singularName": "client",
     "pluralName": "clients",
-    "displayName": "client",
-    "description": ""
+    "displayName": "Client"
   },
   "options": {
     "draftAndPublish": true
@@ -18,25 +17,23 @@
       "maxLength": 255,
       "minLength": 3
     },
-    "cpf": {
-      "type": "string",
-      "required": true,
-      "maxLength": 45,
-      "minLength": 10,
-      "unique": true,
-      "regex": "[0-9]{3}[0-9]{3}[0-9]{3}[0-9]{2}"
-    },
     "email": {
       "type": "string",
       "required": true,
       "maxLength": 255,
-      "minLength": 1,
-      "regex": "[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\\.[a-zA-Z]{2,4}"
+      "minLength": 3
     },
-    "phones": {
+    "cpf": {
+      "type": "string",
+      "maxLength": 45,
+      "minLength": 10,
+      "required": true,
+      "unique": true
+    },
+    "service_orders": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::phone.phone",
+      "target": "api::service-order.service-order",
       "mappedBy": "client"
     }
   }

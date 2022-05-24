@@ -4,8 +4,7 @@
   "info": {
     "singularName": "phone",
     "pluralName": "phones",
-    "displayName": "phone",
-    "description": ""
+    "displayName": "Phone"
   },
   "options": {
     "draftAndPublish": true
@@ -16,17 +15,14 @@
       "type": "string",
       "required": true,
       "maxLength": 255,
-      "minLength": 1
+      "minLength": 1,
+      "unique": true
     },
-    "client": {
+    "service_orders": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::client.client",
-      "inversedBy": "phones"
-    },
-    "numero": {
-      "type": "string",
-      "required": true
+      "relation": "oneToMany",
+      "target": "api::service-order.service-order",
+      "mappedBy": "phone"
     }
   }
 }
