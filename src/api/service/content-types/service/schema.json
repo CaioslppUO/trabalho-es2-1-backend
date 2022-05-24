@@ -4,7 +4,8 @@
   "info": {
     "singularName": "service",
     "pluralName": "services",
-    "displayName": "Service"
+    "displayName": "Service",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -14,21 +15,24 @@
     "type": {
       "type": "string",
       "required": true,
-      "unique": true,
       "maxLength": 255,
       "minLength": 1
     },
     "price": {
       "type": "decimal",
       "default": 0,
-      "required": true,
+      "max": 99999999999,
       "min": 0
     },
-    "service_order_has_services": {
+    "service_orders": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::service-order-has-service.service-order-has-service",
-      "mappedBy": "service"
+      "relation": "manyToMany",
+      "target": "api::service-order.service-order",
+      "inversedBy": "services"
+    },
+    "deleted": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
