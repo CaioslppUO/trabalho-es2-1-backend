@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-describe('Testes de inserção, remoção, consultar e alterar clientes', () => {
+describe('Testes de inserir, consultar e alterar clientes', () => {
     test('teste inserir cliente', () => {
         const client = {
             "data":
@@ -49,7 +49,6 @@ describe('Testes de inserção, remoção, consultar e alterar clientes', () => 
                     }
                 }
                 let id = res.data.data.id;
-                console.log(id);
                 return axios.put(`http://localhost:1337/api/clients/${id}`, client)
                     .then((res_2) => {
                         expect(res_2.status).toBe(200);
@@ -59,7 +58,6 @@ describe('Testes de inserção, remoção, consultar e alterar clientes', () => 
                     })
             })
             .catch((err) => {
-                console.log(err);
                 throw new Error(err);
             });
     })
