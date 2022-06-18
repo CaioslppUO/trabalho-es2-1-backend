@@ -11,7 +11,7 @@ interface ServiceObject {
 export interface Service {
   /**
    * Insert a new Service in the database.
-   * @param type Model of the Service.
+   * @param type Type of the Service.
    * @param price Price of the service.
    * @returns The id of the inserted Service.
    */
@@ -52,7 +52,7 @@ export const Service = (): Service => {
 
   /**
    * Insert a new Service in the database.
-   * @param type Model of the Service.
+   * @param type Type of the Service.
    * @param price Price of the service.
    * @returns The id of the inserted Service.
    */

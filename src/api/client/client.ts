@@ -45,7 +45,6 @@ export interface Client {
    * @param name Client name.
    * @param email Client email.
    * @param cpf Client cpf.
-   * @param model New Client content.
    * @returns True if could update the Client.
    */
   update: (
@@ -132,7 +131,6 @@ export const Client = (): Client => {
    * @param name Client name.
    * @param email Client email.
    * @param cpf Client cpf.
-   * @param model New Client content.
    * @returns True if could update the Client.
    */
   const update = (
