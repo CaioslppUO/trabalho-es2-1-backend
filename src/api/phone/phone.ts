@@ -147,15 +147,16 @@ export const Phone = (): Phone => {
         crud
           .find("Phone")
           .then((res) => {
-            crud
-              .findServiceOrderCount()
-              .then((dt) => {
-                console.log(dt);
-                resolve(res);
-              })
-              .catch((err) => {
-                throw err;
-              });
+            resolve(res);
+            // crud
+            //   .findServiceOrderCount()
+            //   .then((dt) => {
+            //     console.log(dt);
+            //     resolve(res);
+            //   })
+            //   .catch((err) => {
+            //     throw err;
+            //   });
           })
           .catch((err) => {
             throw err;

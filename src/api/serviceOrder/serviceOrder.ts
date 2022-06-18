@@ -129,11 +129,20 @@ export const ServiceOrder = (): ServiceOrder => {
       try {
         crud
           .findServiceOrder()
-          .then((res) => {
-            resolve(res);
+          .then((res: any) => {
+            console.log(res[0].id);
+            crud
+              .findServiceByOrderService(res[0].id)
+              .then((data) => {
+                res[0].services = data;
+                resolve(res);
+              })
+              .catch((err) => {
+                rejects(err);
+              });
           })
           .catch((err) => {
-            throw err;
+            rejects(err);
           });
       } catch (error) {
         rejects(error);
@@ -149,9 +158,17 @@ export const ServiceOrder = (): ServiceOrder => {
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       crud
-        .findOne("ServiceOrder", id)
-        .then((res) => {
-          resolve(res);
+        .findOneServiceOrder(id)
+        .then((res: any) => {
+          crud
+            .findServiceByOrderService(res[0].id)
+            .then((data) => {
+              res[0].services = data;
+              resolve(res);
+            })
+            .catch((err) => {
+              rejects(err);
+            });
         })
         .catch((err) => {
           rejects(err);
