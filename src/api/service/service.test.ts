@@ -89,6 +89,6 @@ describe("Test the service database operations", () => {
       .insert("", 10.55)
       .then(() => {})
       .catch((err) => err);
-    expect(res).toBe("could not insert");
+    expect(res).toBe("service type must not be empty");
   });
 });

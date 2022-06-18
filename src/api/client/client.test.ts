@@ -98,4 +98,28 @@ describe("Test the client database operations", () => {
       .catch((err) => err);
     expect(res).toBe("could not insert");
   });
+
+  test("Should not insert not valid cpf", async () => {
+    let res = await client
+      .insert("JoseDeSouza", "lala@gmail.com", "1")
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("invalid cpf size");
+  });
+
+  test("Should not insert a not valid email", async () => {
+    let res = await client
+      .insert("Jubileu", "@gmail.com", "12345668910")
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("invalid email");
+  });
+
+  test("Should not insert a empty name client", async () => {
+    let res = await client
+      .insert("", "empty@email.com", "22345678910")
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("client name must not be empty");
+  });
 });

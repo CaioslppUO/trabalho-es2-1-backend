@@ -86,14 +86,14 @@ export const ServiceOrder = (): ServiceOrder => {
                       rejects(err);
                     });
                 } else {
-                  rejects("could not insert");
+                  rejects("client doesn't exist");
                 }
               })
               .catch((err) => {
                 rejects(err);
               });
           } else {
-            rejects("could not insert");
+            rejects("phone doesn't exist");
           }
         })
         .catch((err) => {
