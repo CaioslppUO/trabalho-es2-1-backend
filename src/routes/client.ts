@@ -9,9 +9,14 @@ let client = Client();
 
 router.get("/client", jsonParser, (req: any, res: any) => {
   try {
-    return client.find().then((data) => {
-      return res.status(200).send(data);
-    });
+    return client
+      .find()
+      .then((data) => {
+        return res.status(200).send(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (error) {
     return res.status(400).send({ error });
   }

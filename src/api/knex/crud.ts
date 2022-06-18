@@ -1,5 +1,4 @@
 import { database } from "./knex";
-import { Knex } from "knex";
 
 export interface Crud {
   /**
@@ -16,10 +15,7 @@ export interface Crud {
    * @param id Id of the object to remove.
    * @returns Query result.
    */
-  remove: (
-    table: string,
-    id: number
-  ) => Promise<Knex.QueryBuilder<any, number>>;
+  remove: (table: string, id: number) => Promise<number>;
 
   /**
    * Remove an object from a table.
@@ -36,14 +32,14 @@ export interface Crud {
     id_2: number,
     field_1: string,
     field_2: string
-  ) => Promise<Knex.QueryBuilder<any, number>>;
+  ) => Promise<number>;
 
   /**
    * Select and return all objects from a table.
    * @param table Table to select objects.
    * @returns All objects from a table.
    */
-  find: (table: string) => Promise<any>;
+  find: (table: string) => Promise<any[]>;
 
   /**
    * Return on object from a table.
@@ -51,7 +47,7 @@ export interface Crud {
    * @param id Id of the object.
    * @returns Object.
    */
-  findOne: (table: string, id: number) => Promise<any>;
+  findOne: (table: string, id: number) => Promise<any[]>;
 
   /**
    * Return on object from a table that has no primary id.
@@ -68,7 +64,7 @@ export interface Crud {
     id_2: number,
     field_1: string,
     field_2: string
-  ) => Promise<any>;
+  ) => Promise<any[]>;
 
   /**
    * Update an object in a table.
@@ -77,11 +73,7 @@ export interface Crud {
    * @param content Content to update the object.
    * @returns Query result.
    */
-  update: <Type>(
-    table: string,
-    id: number,
-    content: Type
-  ) => Promise<Knex.QueryBuilder<any, number>>;
+  update: <Type>(table: string, id: number, content: Type) => Promise<number>;
 
   /**
    * Update an object in a table.
@@ -100,7 +92,7 @@ export interface Crud {
     field_1: string,
     field_2: string,
     content: Type
-  ) => Promise<Knex.QueryBuilder<any, number>>;
+  ) => Promise<number>;
 }
 
 export const Crud = (): Crud => {
@@ -114,12 +106,16 @@ export const Crud = (): Crud => {
     table: string,
     content: Type
   ): Promise<{ id: number }> => {
-    return database(table)
-      .insert(content)
-      .then((res) => ({ id: res[0] }))
-      .catch(() => {
-        throw new Error("could not insert");
-      });
+    return new Promise(async (resolve) => {
+      await database(table)
+        .insert(content)
+        .then((res) => {
+          resolve({ id: res[0] });
+        })
+        .catch(() => {
+          throw new Error("could not insert");
+        });
+    });
   };
 
   /**
@@ -128,15 +124,14 @@ export const Crud = (): Crud => {
    * @param id Id of the object to remove.
    * @returns Query result.
    */
-  const remove = (
-    table: string,
-    id: number
-  ): Promise<Knex.QueryBuilder<any, number>> => {
-    return new Promise(() => {
-      return database(table)
+  const remove = (table: string, id: number): Promise<number> => {
+    return new Promise(async (resolve) => {
+      await database(table)
         .where("id", Number(id))
         .del()
-        .then((res) => res)
+        .then((res) => {
+          resolve(res);
+        })
         .catch(() => {
           throw new Error("could not remove");
         });
@@ -158,12 +153,15 @@ export const Crud = (): Crud => {
     id_2: number,
     field_1: string,
     field_2: string
-  ): Promise<Knex.QueryBuilder<any, number>> => {
-    return new Promise(() => {
-      return database(table)
+  ): Promise<number> => {
+    return new Promise(async (resolve) => {
+      await database(table)
         .where(`${field_1}`, Number(id_1))
         .andWhere(`${field_2}`, Number(id_2))
         .del()
+        .then((res) => {
+          resolve(res);
+        })
         .catch(() => {
           throw new Error("could not remove");
         });
@@ -176,10 +174,14 @@ export const Crud = (): Crud => {
    * @returns All objects from a table.
    */
   const find = (table: string): Promise<any> => {
-    return new Promise(() => {
-      return database(table).catch((err) => {
-        throw new Error("could not find");
-      });
+    return new Promise(async (resolve) => {
+      resolve(
+        await database(table)
+          .then((res) => res)
+          .catch((err) => {
+            throw new Error("could not find");
+          })
+      );
     });
   };
 
@@ -189,10 +191,13 @@ export const Crud = (): Crud => {
    * @param id Id of the object.
    * @returns Object.
    */
-  const findOne = (table: string, id: number): Promise<any> => {
-    return new Promise(() => {
-      return database(table)
+  const findOne = (table: string, id: number): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database(table)
         .where({ id: Number(id) })
+        .then((res) => {
+          resolve(res);
+        })
         .catch(() => {
           throw new Error("could not find one");
         });
@@ -214,11 +219,14 @@ export const Crud = (): Crud => {
     id_2: number,
     field_1: string,
     field_2: string
-  ): Promise<any> => {
-    return new Promise(() => {
-      return database(table)
+  ): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database(table)
         .where(`${field_1}`, Number(id_1))
         .andWhere(`${field_2}`, Number(id_2))
+        .then((res) => {
+          resolve(res);
+        })
         .catch(() => {
           throw new Error("could not find one");
         });
@@ -236,11 +244,14 @@ export const Crud = (): Crud => {
     table: string,
     id: number,
     content: Type
-  ): Promise<Knex.QueryBuilder<any, number>> => {
-    return new Promise(() => {
-      return database(table)
+  ): Promise<number> => {
+    return new Promise(async (resolve) => {
+      await database(table)
         .where("id", Number(id))
         .update(content)
+        .then((res) => {
+          resolve(res);
+        })
         .catch(() => {
           throw new Error("could not update");
         });
@@ -264,12 +275,15 @@ export const Crud = (): Crud => {
     field_1: string,
     field_2: string,
     content: Type
-  ): Promise<Knex.QueryBuilder<any, number>> => {
-    return new Promise(() => {
-      return database(table)
+  ): Promise<number> => {
+    return new Promise(async (resolve) => {
+      await database(table)
         .where(`${field_1}`, Number(id_1))
         .andWhere(`${field_2}`, Number(id_2))
         .update(content)
+        .then((res) => {
+          resolve(res);
+        })
         .catch(() => {
           throw new Error("could not update");
         });

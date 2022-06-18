@@ -82,4 +82,17 @@ describe("Test the client database operations", () => {
         expect(err).toMatch("error");
       });
   });
+
+  test("Should not insert client with duplicated cpf", () => {
+    expect.assertions(1);
+    console.log("1");
+    client
+      .insert("Luiz Afonso", "luizafonso@gmail.com", "12345678910")
+      .then(() => {
+        console.log("2");
+      })
+      .catch((err) => {
+        expect(err.message).toBe("could not insert");
+      });
+  });
 });
