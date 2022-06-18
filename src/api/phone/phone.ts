@@ -56,7 +56,6 @@ export const Phone = (): Phone => {
     return new Promise((resolve, rejects) => {
       try {
         let new_phone: PhoneObject = { model };
-        console.log(new_phone);
         resolve(crud.insert("Phone", new_phone));
       } catch (error) {
         rejects(error);

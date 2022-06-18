@@ -1,7 +1,14 @@
-import { exit } from "process";
 import { Phone } from "./phone";
 
 describe("Test the phone database operations", () => {
+  test("Should select all phones", () => {
+    let phone = Phone();
+    phone.find().then((res) => {
+      expect(res.length).toBeGreaterThanOrEqual(7);
+      expect(Object.keys(res[0]).sort()).toEqual(["id", "model"].sort());
+    });
+  });
+
   test("Should select a phone", () => {
     let phone = Phone();
     phone.findOne(1).then((res) => {

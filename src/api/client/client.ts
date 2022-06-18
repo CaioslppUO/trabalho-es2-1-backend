@@ -74,7 +74,6 @@ export const Client = (): Client => {
     return new Promise((resolve, rejects) => {
       try {
         let new_Client: ClientObject = { name, email, cpf };
-        console.log(new_Client);
         resolve(crud.insert("Client", new_Client));
       } catch (error) {
         rejects(error);

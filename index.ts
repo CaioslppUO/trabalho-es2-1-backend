@@ -19,7 +19,7 @@ const initialize_db = (wipe_db: boolean): Promise<void> => {
 initialize_db(true).then(() => {
   let p = Phone();
   p.find().then((res) => {
-    console.log(res);
+    //console.log(res);
     exit();
   });
 });
