@@ -75,4 +75,20 @@ describe("Test the service database operations", () => {
         expect(err).toMatch("error");
       });
   });
+
+  test("Should not insert duplicated service type", async () => {
+    let res = await service
+      .insert("Troca de Tela", 13.55)
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("could not insert");
+  });
+
+  test("Should not insert empty service type", async () => {
+    let res = await service
+      .insert("", 10.55)
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("could not insert");
+  });
 });

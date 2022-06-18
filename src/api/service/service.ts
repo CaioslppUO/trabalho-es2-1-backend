@@ -58,6 +58,9 @@ export const Service = (): Service => {
    */
   const insert = (type: string, price: number): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
+      if (type.length <= 0) {
+        rejects("could not insert");
+      }
       let new_service: ServiceObject = { type, price };
       crud
         .insert("Service", new_service)
