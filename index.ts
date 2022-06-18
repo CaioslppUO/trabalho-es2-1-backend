@@ -22,6 +22,7 @@ const initialize_db = (wipe_db: boolean): Promise<void> => {
   return new Promise(async (resolve, rejects) => {
     if (!fs.existsSync(__dirname + "/src/database/data.sqlite3")) {
       await database.migrate.latest();
+      await database.seed.run();
     }
     if (wipe_db) {
       await database.seed.run();
