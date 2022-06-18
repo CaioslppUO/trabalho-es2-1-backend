@@ -84,21 +84,18 @@ describe("Test the client database operations", () => {
   });
 
   test("Should not insert client with duplicated cpf", async () => {
-    await client
+    let res = await client
       .insert("Luiz Afonso", "luizafonso@gmail.com", "12345678910")
       .then(() => {})
-      .catch((err) => {
-        console.log(err);
-        expect(err).toBe("could not insert");
-      });
+      .catch((err) => err);
+    expect(res).toBe("could not insert");
   });
 
   test("Should not insert client with duplicated email", async () => {
-    await client
+    let res = await client
       .insert("Albertinho", "caioslppuo@gmail.com", "12344678910")
       .then(() => {})
-      .catch((err) => {
-        expect(err).toBe("could not insert");
-      });
+      .catch((err) => err);
+    expect(res).toBe("could not insert");
   });
 });
