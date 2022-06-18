@@ -17,7 +17,6 @@ exports.up = function (knex: Knex<any, unknown[]>) {
       .notNullable()
       .references("id")
       .inTable("Phone");
-    tbl.string("model", 255).notNullable();
   });
 };
 
