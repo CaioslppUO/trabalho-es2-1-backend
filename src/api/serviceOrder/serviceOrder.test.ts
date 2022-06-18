@@ -49,4 +49,26 @@ describe("Test the service order database operations", () => {
       });
     });
   });
+
+  test("Should not allow to insert a serviceOrder with a phone that doesn't exist", () => {
+    serviceOrder
+      .insert(1, 10)
+      .then((res) => {
+        expect(res.id).toBe(-1);
+      })
+      .catch((err) => {
+        expect(err.id).toBe(-1);
+      });
+  });
+
+  test("Should not allow to insert a serviceOrder with a client that doesn't exist", () => {
+    serviceOrder
+      .insert(10, 1)
+      .then((res) => {
+        expect(res.id).toBe(-1);
+      })
+      .catch((err) => {
+        expect(err.id).toBe(-1);
+      });
+  });
 });

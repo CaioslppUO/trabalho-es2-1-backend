@@ -16,7 +16,10 @@ export interface Crud {
    * @param id Id of the object to remove.
    * @returns Query result.
    */
-  remove: (table: string, id: number) => Knex.QueryBuilder<any, number>;
+  remove: (
+    table: string,
+    id: number
+  ) => Promise<Knex.QueryBuilder<any, number>>;
 
   /**
    * Remove an object from a table.
@@ -33,14 +36,14 @@ export interface Crud {
     id_2: number,
     field_1: string,
     field_2: string
-  ) => Knex.QueryBuilder<any, number>;
+  ) => Promise<Knex.QueryBuilder<any, number>>;
 
   /**
    * Select and return all objects from a table.
    * @param table Table to select objects.
    * @returns All objects from a table.
    */
-  find: (table: string) => any;
+  find: (table: string) => Promise<any>;
 
   /**
    * Return on object from a table.
@@ -48,7 +51,7 @@ export interface Crud {
    * @param id Id of the object.
    * @returns Object.
    */
-  findOne: (table: string, id: number) => any;
+  findOne: (table: string, id: number) => Promise<any>;
 
   /**
    * Return on object from a table that has no primary id.
@@ -65,7 +68,7 @@ export interface Crud {
     id_2: number,
     field_1: string,
     field_2: string
-  ) => any;
+  ) => Promise<any>;
 
   /**
    * Update an object in a table.
@@ -78,7 +81,7 @@ export interface Crud {
     table: string,
     id: number,
     content: Type
-  ) => Knex.QueryBuilder<any, number>;
+  ) => Promise<Knex.QueryBuilder<any, number>>;
 
   /**
    * Update an object in a table.
@@ -97,7 +100,7 @@ export interface Crud {
     field_1: string,
     field_2: string,
     content: Type
-  ) => Knex.QueryBuilder<any, number>;
+  ) => Promise<Knex.QueryBuilder<any, number>>;
 }
 
 export const Crud = (): Crud => {
@@ -113,7 +116,10 @@ export const Crud = (): Crud => {
   ): Promise<{ id: number }> => {
     return database(table)
       .insert(content)
-      .then((res) => ({ id: res[0] }));
+      .then((res) => ({ id: res[0] }))
+      .catch((err) => {
+        throw new Error(err);
+      });
   };
 
   /**
@@ -125,7 +131,7 @@ export const Crud = (): Crud => {
   const remove = (
     table: string,
     id: number
-  ): Knex.QueryBuilder<any, number> => {
+  ): Promise<Knex.QueryBuilder<any, number>> => {
     return database(table).where("id", Number(id)).del();
   };
 
@@ -144,7 +150,7 @@ export const Crud = (): Crud => {
     id_2: number,
     field_1: string,
     field_2: string
-  ): Knex.QueryBuilder<any, number> => {
+  ): Promise<Knex.QueryBuilder<any, number>> => {
     return database(table)
       .where(`${field_1}`, Number(id_1))
       .andWhere(`${field_2}`, Number(id_2))
@@ -156,8 +162,10 @@ export const Crud = (): Crud => {
    * @param table Table to select objects.
    * @returns All objects from a table.
    */
-  const find = (table: string): any => {
-    return database(table);
+  const find = (table: string): Promise<any> => {
+    return database(table).catch((err) => {
+      throw new Error(err);
+    });
   };
 
   /**
@@ -166,8 +174,12 @@ export const Crud = (): Crud => {
    * @param id Id of the object.
    * @returns Object.
    */
-  const findOne = (table: string, id: number): any => {
-    return database(table).where({ id: Number(id) });
+  const findOne = (table: string, id: number): Promise<any> => {
+    return database(table)
+      .where({ id: Number(id) })
+      .catch((err) => {
+        throw new Error(err);
+      });
   };
 
   /**
@@ -185,7 +197,7 @@ export const Crud = (): Crud => {
     id_2: number,
     field_1: string,
     field_2: string
-  ): any => {
+  ): Promise<any> => {
     return database(table)
       .where(`${field_1}`, Number(id_1))
       .andWhere(`${field_2}`, Number(id_2));
@@ -202,7 +214,7 @@ export const Crud = (): Crud => {
     table: string,
     id: number,
     content: Type
-  ): Knex.QueryBuilder<any, number> => {
+  ): Promise<Knex.QueryBuilder<any, number>> => {
     return database(table).where("id", Number(id)).update(content);
   };
 
@@ -223,7 +235,7 @@ export const Crud = (): Crud => {
     field_1: string,
     field_2: string,
     content: Type
-  ): Knex.QueryBuilder<any, number> => {
+  ): Promise<Knex.QueryBuilder<any, number>> => {
     return database(table)
       .where(`${field_1}`, Number(id_1))
       .andWhere(`${field_2}`, Number(id_2))

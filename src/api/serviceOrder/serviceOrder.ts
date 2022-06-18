@@ -1,4 +1,6 @@
 import { Crud } from "../knex/crud";
+import { Phone } from "../phone/phone";
+import { Client } from "../client/client";
 
 /**
  * Database ServiceOrder interface.
@@ -62,10 +64,44 @@ export const ServiceOrder = (): ServiceOrder => {
   ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
       try {
-        let new_ServiceOrder: ServiceOrderObject = { idClient, idPhone };
-        resolve(crud.insert("ServiceOrder", new_ServiceOrder));
+        let phone = Phone();
+        phone
+          .findOne(idPhone)
+          .then((res) => {
+            if (res.length > 0) {
+              let client = Client();
+              client
+                .findOne(idClient)
+                .then((res2) => {
+                  if (res2.length > 0) {
+                    let new_ServiceOrder: ServiceOrderObject = {
+                      idClient,
+                      idPhone,
+                    };
+                    crud
+                      .insert("ServiceOrder", new_ServiceOrder)
+                      .then((res) => {
+                        resolve(res);
+                      })
+                      .catch((err) => {
+                        rejects({ id: -1 });
+                      });
+                  } else {
+                    rejects({ id: -1 });
+                  }
+                })
+                .catch((err) => {
+                  rejects({ id: -1 });
+                });
+            } else {
+              rejects({ id: -1 });
+            }
+          })
+          .catch((err) => {
+            rejects({ id: -1 });
+          });
       } catch (error) {
-        rejects(error);
+        rejects({ id: -1 });
       }
     });
   };
@@ -76,10 +112,16 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise(async (resolve, rejects) => {
+    return new Promise((resolve, rejects) => {
       try {
-        await crud.remove("ServiceOrder", id);
-        resolve(true);
+        crud
+          .remove("ServiceOrder", id)
+          .then((res) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(false);
       }
@@ -93,7 +135,14 @@ export const ServiceOrder = (): ServiceOrder => {
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.find("ServiceOrder"));
+        crud
+          .find("ServiceOrder")
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -108,7 +157,14 @@ export const ServiceOrder = (): ServiceOrder => {
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.findOne("ServiceOrder", id));
+        crud
+          .findOne("ServiceOrder", id)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -127,11 +183,17 @@ export const ServiceOrder = (): ServiceOrder => {
     idClient: number,
     idPhone: number
   ): Promise<boolean> => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       try {
         let new_ServiceOrder: ServiceOrderObject = { idClient, idPhone };
-        await crud.update("ServiceOrder", id, new_ServiceOrder);
-        resolve(true);
+        crud
+          .update("ServiceOrder", id, new_ServiceOrder)
+          .then((res) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         reject(false);
       }

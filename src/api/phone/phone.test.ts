@@ -1,4 +1,5 @@
 import { Phone } from "./phone";
+import { database } from "../knex/knex";
 
 describe("Test the phone database operations", () => {
   let phone = Phone();

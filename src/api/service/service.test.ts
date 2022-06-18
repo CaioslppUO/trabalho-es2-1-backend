@@ -1,4 +1,5 @@
 import { Service } from "./service";
+import { database } from "../knex/knex";
 
 describe("Test the service database operations", () => {
   let service = Service();

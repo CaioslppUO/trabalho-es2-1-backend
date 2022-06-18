@@ -31,7 +31,7 @@ const initialize_db = (wipe_db: boolean): Promise<void> => {
 };
 
 // Setup Routes
-initialize_db(true).then(() => {
+initialize_db(false).then(() => {
   app.use(cors());
 
   app.get("/", jsonParser, (req: any, res: any) => {

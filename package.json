@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "npx ts-node index.ts",
-    "test": "jest --detectOpenHandles",
+    "test": "npx knex migrate:latest && npx knex seed:run && jest --detectOpenHandles",
     "tsc": "tsc"
   },
   "repository": {

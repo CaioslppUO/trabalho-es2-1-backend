@@ -1,4 +1,5 @@
 import { Client } from "./client";
+import { database } from "../knex/knex";
 
 describe("Test the client database operations", () => {
   let client = Client();

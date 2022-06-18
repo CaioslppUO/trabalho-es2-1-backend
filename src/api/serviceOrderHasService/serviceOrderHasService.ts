@@ -77,7 +77,14 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
           idServiceOrder,
           idService,
         };
-        resolve(crud.insert("ServiceOrderHasService", new_ServiceOrder));
+        crud
+          .insert("ServiceOrderHasService", new_ServiceOrder)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -117,7 +124,14 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.find("ServiceOrderHasService"));
+        crud
+          .find("ServiceOrderHasService")
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -133,15 +147,20 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
   const findOne = (serviceOrderId: number, serviceId: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(
-          crud.findOneNoPrimary(
+        crud
+          .findOneNoPrimary(
             "ServiceOrderHasService",
             serviceOrderId,
             serviceId,
             "idServiceOrder",
             "idService"
           )
-        );
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -162,21 +181,27 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
     idServiceOrder: number,
     idService: number
   ): Promise<boolean> => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       try {
         let new_ServiceOrder: ServiceOrderHasServiceObject = {
           idServiceOrder,
           idService,
         };
-        await crud.updateNoPrimary(
-          "ServiceOrderHasService",
-          oldIdServiceOrder,
-          oldIdService,
-          "idServiceOrder",
-          "idService",
-          { idServiceOrder, idService }
-        );
-        resolve(true);
+        crud
+          .updateNoPrimary(
+            "ServiceOrderHasService",
+            oldIdServiceOrder,
+            oldIdService,
+            "idServiceOrder",
+            "idService",
+            { idServiceOrder, idService }
+          )
+          .then((res) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         reject(false);
       }

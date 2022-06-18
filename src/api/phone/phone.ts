@@ -56,7 +56,14 @@ export const Phone = (): Phone => {
     return new Promise((resolve, rejects) => {
       try {
         let new_phone: PhoneObject = { model };
-        resolve(crud.insert("Phone", new_phone));
+        crud
+          .insert("Phone", new_phone)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -69,10 +76,16 @@ export const Phone = (): Phone => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise(async (resolve, rejects) => {
+    return new Promise((resolve, rejects) => {
       try {
-        await crud.remove("Phone", id);
-        resolve(true);
+        crud
+          .remove("Phone", id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(false);
       }
@@ -86,7 +99,14 @@ export const Phone = (): Phone => {
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.find("Phone"));
+        crud
+          .find("Phone")
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -101,7 +121,14 @@ export const Phone = (): Phone => {
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.findOne("Phone", id));
+        crud
+          .findOne("Phone", id)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -118,8 +145,14 @@ export const Phone = (): Phone => {
     return new Promise(async (resolve, reject) => {
       try {
         let new_phone: PhoneObject = { model };
-        await crud.update("Phone", id, new_phone);
-        resolve(true);
+        crud
+          .update("Phone", id, new_phone)
+          .then((res) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         reject(false);
       }

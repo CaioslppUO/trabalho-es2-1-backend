@@ -1,4 +1,5 @@
 import { ServiceOrderHasService } from "./serviceOrderHasService";
+import { database } from "../knex/knex";
 
 describe("Test the service order has service database operations", () => {
   let serviceOrderHasService = ServiceOrderHasService();

@@ -60,7 +60,14 @@ export const Service = (): Service => {
     return new Promise((resolve, rejects) => {
       try {
         let new_service: ServiceObject = { type, price };
-        resolve(crud.insert("Service", new_service));
+        crud
+          .insert("Service", new_service)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -73,10 +80,16 @@ export const Service = (): Service => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise(async (resolve, rejects) => {
+    return new Promise((resolve, rejects) => {
       try {
-        await crud.remove("Service", id);
-        resolve(true);
+        crud
+          .remove("Service", id)
+          .then((res) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(false);
       }
@@ -90,7 +103,14 @@ export const Service = (): Service => {
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.find("Service"));
+        crud
+          .find("Service")
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -105,7 +125,14 @@ export const Service = (): Service => {
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.findOne("Service", id));
+        crud
+          .findOne("Service", id)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -127,8 +154,14 @@ export const Service = (): Service => {
     return new Promise(async (resolve, reject) => {
       try {
         let new_service: ServiceObject = { type, price };
-        await crud.update("Service", id, new_service);
-        resolve(true);
+        crud
+          .update("Service", id, new_service)
+          .then((res) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         reject(false);
       }

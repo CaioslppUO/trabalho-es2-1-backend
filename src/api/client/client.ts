@@ -73,7 +73,14 @@ export const Client = (): Client => {
     return new Promise((resolve, rejects) => {
       try {
         let new_Client: ClientObject = { name, email, cpf };
-        resolve(crud.insert("Client", new_Client));
+        crud
+          .insert("Client", new_Client)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -86,10 +93,16 @@ export const Client = (): Client => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise(async (resolve, rejects) => {
+    return new Promise((resolve, rejects) => {
       try {
-        await crud.remove("Client", id);
-        resolve(true);
+        crud
+          .remove("Client", id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(false);
       }
@@ -103,7 +116,14 @@ export const Client = (): Client => {
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.find("Client"));
+        crud
+          .find("Client")
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -118,7 +138,14 @@ export const Client = (): Client => {
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       try {
-        resolve(crud.findOne("Client", id));
+        crud
+          .findOne("Client", id)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         rejects(error);
       }
@@ -139,11 +166,15 @@ export const Client = (): Client => {
     email: string,
     cpf: string
   ): Promise<boolean> => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       try {
         let new_Client: ClientObject = { name, email, cpf };
-        await crud.update("Client", id, new_Client);
-        resolve(true);
+        crud
+          .update("Client", id, new_Client)
+          .then((res) => resolve(true))
+          .catch((err) => {
+            throw err;
+          });
       } catch (error) {
         reject(false);
       }
