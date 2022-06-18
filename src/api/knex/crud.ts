@@ -117,8 +117,8 @@ export const Crud = (): Crud => {
     return database(table)
       .insert(content)
       .then((res) => ({ id: res[0] }))
-      .catch((err) => {
-        throw new Error(err);
+      .catch(() => {
+        throw new Error("could not insert");
       });
   };
 
@@ -132,7 +132,15 @@ export const Crud = (): Crud => {
     table: string,
     id: number
   ): Promise<Knex.QueryBuilder<any, number>> => {
-    return database(table).where("id", Number(id)).del();
+    return new Promise(() => {
+      return database(table)
+        .where("id", Number(id))
+        .del()
+        .then((res) => res)
+        .catch(() => {
+          throw new Error("could not remove");
+        });
+    });
   };
 
   /**
@@ -151,10 +159,15 @@ export const Crud = (): Crud => {
     field_1: string,
     field_2: string
   ): Promise<Knex.QueryBuilder<any, number>> => {
-    return database(table)
-      .where(`${field_1}`, Number(id_1))
-      .andWhere(`${field_2}`, Number(id_2))
-      .del();
+    return new Promise(() => {
+      return database(table)
+        .where(`${field_1}`, Number(id_1))
+        .andWhere(`${field_2}`, Number(id_2))
+        .del()
+        .catch(() => {
+          throw new Error("could not remove");
+        });
+    });
   };
 
   /**
@@ -163,8 +176,10 @@ export const Crud = (): Crud => {
    * @returns All objects from a table.
    */
   const find = (table: string): Promise<any> => {
-    return database(table).catch((err) => {
-      throw new Error(err);
+    return new Promise(() => {
+      return database(table).catch((err) => {
+        throw new Error("could not find");
+      });
     });
   };
 
@@ -175,11 +190,13 @@ export const Crud = (): Crud => {
    * @returns Object.
    */
   const findOne = (table: string, id: number): Promise<any> => {
-    return database(table)
-      .where({ id: Number(id) })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(() => {
+      return database(table)
+        .where({ id: Number(id) })
+        .catch(() => {
+          throw new Error("could not find one");
+        });
+    });
   };
 
   /**
@@ -198,9 +215,14 @@ export const Crud = (): Crud => {
     field_1: string,
     field_2: string
   ): Promise<any> => {
-    return database(table)
-      .where(`${field_1}`, Number(id_1))
-      .andWhere(`${field_2}`, Number(id_2));
+    return new Promise(() => {
+      return database(table)
+        .where(`${field_1}`, Number(id_1))
+        .andWhere(`${field_2}`, Number(id_2))
+        .catch(() => {
+          throw new Error("could not find one");
+        });
+    });
   };
 
   /**
@@ -215,7 +237,14 @@ export const Crud = (): Crud => {
     id: number,
     content: Type
   ): Promise<Knex.QueryBuilder<any, number>> => {
-    return database(table).where("id", Number(id)).update(content);
+    return new Promise(() => {
+      return database(table)
+        .where("id", Number(id))
+        .update(content)
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   /**
@@ -236,10 +265,15 @@ export const Crud = (): Crud => {
     field_2: string,
     content: Type
   ): Promise<Knex.QueryBuilder<any, number>> => {
-    return database(table)
-      .where(`${field_1}`, Number(id_1))
-      .andWhere(`${field_2}`, Number(id_2))
-      .update(content);
+    return new Promise(() => {
+      return database(table)
+        .where(`${field_1}`, Number(id_1))
+        .andWhere(`${field_2}`, Number(id_2))
+        .update(content)
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   return {

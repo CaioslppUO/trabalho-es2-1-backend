@@ -57,20 +57,16 @@ export const Service = (): Service => {
    * @returns The id of the inserted Service.
    */
   const insert = (type: string, price: number): Promise<{ id: number }> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        let new_service: ServiceObject = { type, price };
-        crud
-          .insert("Service", new_service)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      let new_service: ServiceObject = { type, price };
+      crud
+        .insert("Service", new_service)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -80,19 +76,15 @@ export const Service = (): Service => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .remove("Service", id)
-          .then((res) => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(false);
-      }
+    return new Promise((resolve) => {
+      crud
+        .remove("Service", id)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -101,19 +93,15 @@ export const Service = (): Service => {
    * @returns Services in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .find("Service")
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .find("Service")
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -123,19 +111,15 @@ export const Service = (): Service => {
    * @returns Service.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .findOne("Service", id)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .findOne("Service", id)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -151,20 +135,16 @@ export const Service = (): Service => {
     type: string,
     price: number
   ): Promise<boolean> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let new_service: ServiceObject = { type, price };
-        crud
-          .update("Service", id, new_service)
-          .then((res) => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        reject(false);
-      }
+    return new Promise(async (resolve) => {
+      let new_service: ServiceObject = { type, price };
+      crud
+        .update("Service", id, new_service)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 

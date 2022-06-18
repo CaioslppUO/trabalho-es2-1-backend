@@ -70,20 +70,16 @@ export const Client = (): Client => {
     email: string,
     cpf: string
   ): Promise<{ id: number }> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        let new_Client: ClientObject = { name, email, cpf };
-        crud
-          .insert("Client", new_Client)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      let new_Client: ClientObject = { name, email, cpf };
+      crud
+        .insert("Client", new_Client)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -93,19 +89,15 @@ export const Client = (): Client => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .remove("Client", id)
-          .then(() => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(false);
-      }
+    return new Promise((resolve) => {
+      crud
+        .remove("Client", id)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -114,19 +106,15 @@ export const Client = (): Client => {
    * @returns Clients in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .find("Client")
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .find("Client")
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -136,19 +124,15 @@ export const Client = (): Client => {
    * @returns Client.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .findOne("Client", id)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .findOne("Client", id)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -166,18 +150,14 @@ export const Client = (): Client => {
     email: string,
     cpf: string
   ): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      try {
-        let new_Client: ClientObject = { name, email, cpf };
-        crud
-          .update("Client", id, new_Client)
-          .then((res) => resolve(true))
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        reject(false);
-      }
+    return new Promise((resolve) => {
+      let new_Client: ClientObject = { name, email, cpf };
+      crud
+        .update("Client", id, new_Client)
+        .then(() => resolve(true))
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 

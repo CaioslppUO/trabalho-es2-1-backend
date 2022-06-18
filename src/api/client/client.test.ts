@@ -14,7 +14,7 @@ describe("Test the client database operations", () => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -30,7 +30,7 @@ describe("Test the client database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -47,7 +47,7 @@ describe("Test the client database operations", () => {
           });
         })
         .catch((err) => {
-          console.log(err);
+          expect(err).toMatch("error");
         });
     });
   });
@@ -60,7 +60,7 @@ describe("Test the client database operations", () => {
           expect(res2).toEqual([]);
         })
         .catch((err) => {
-          console.log(err);
+          expect(err).toMatch("error");
         });
     });
   });
@@ -79,7 +79,7 @@ describe("Test the client database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 });

@@ -63,46 +63,42 @@ export const ServiceOrder = (): ServiceOrder => {
     idPhone: number
   ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
-      try {
-        let phone = Phone();
-        phone
-          .findOne(idPhone)
-          .then((res) => {
-            if (res.length > 0) {
-              let client = Client();
-              client
-                .findOne(idClient)
-                .then((res2) => {
-                  if (res2.length > 0) {
-                    let new_ServiceOrder: ServiceOrderObject = {
-                      idClient,
-                      idPhone,
-                    };
-                    crud
-                      .insert("ServiceOrder", new_ServiceOrder)
-                      .then((res) => {
-                        resolve(res);
-                      })
-                      .catch((err) => {
-                        rejects({ id: -1 });
-                      });
-                  } else {
-                    rejects({ id: -1 });
-                  }
-                })
-                .catch((err) => {
+      let phone = Phone();
+      phone
+        .findOne(idPhone)
+        .then((res) => {
+          if (res.length > 0) {
+            let client = Client();
+            client
+              .findOne(idClient)
+              .then((res2) => {
+                if (res2.length > 0) {
+                  let new_ServiceOrder: ServiceOrderObject = {
+                    idClient,
+                    idPhone,
+                  };
+                  crud
+                    .insert("ServiceOrder", new_ServiceOrder)
+                    .then((res) => {
+                      resolve(res);
+                    })
+                    .catch((err) => {
+                      throw err;
+                    });
+                } else {
                   rejects({ id: -1 });
-                });
-            } else {
-              rejects({ id: -1 });
-            }
-          })
-          .catch((err) => {
+                }
+              })
+              .catch((err) => {
+                throw err;
+              });
+          } else {
             rejects({ id: -1 });
-          });
-      } catch (error) {
-        rejects({ id: -1 });
-      }
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -112,19 +108,15 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .remove("ServiceOrder", id)
-          .then((res) => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(false);
-      }
+    return new Promise((resolve) => {
+      crud
+        .remove("ServiceOrder", id)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -133,19 +125,15 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns ServiceOrders in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .find("ServiceOrder")
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .find("ServiceOrder")
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -155,19 +143,15 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns ServiceOrder.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .findOne("ServiceOrder", id)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .findOne("ServiceOrder", id)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -183,20 +167,16 @@ export const ServiceOrder = (): ServiceOrder => {
     idClient: number,
     idPhone: number
   ): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      try {
-        let new_ServiceOrder: ServiceOrderObject = { idClient, idPhone };
-        crud
-          .update("ServiceOrder", id, new_ServiceOrder)
-          .then((res) => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        reject(false);
-      }
+    return new Promise((resolve) => {
+      let new_ServiceOrder: ServiceOrderObject = { idClient, idPhone };
+      crud
+        .update("ServiceOrder", id, new_ServiceOrder)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 

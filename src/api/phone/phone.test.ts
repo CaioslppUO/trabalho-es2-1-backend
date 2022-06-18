@@ -12,7 +12,7 @@ describe("Test the phone database operations", () => {
         expect(Object.keys(res[0]).sort()).toEqual(["id", "model"].sort());
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -24,7 +24,7 @@ describe("Test the phone database operations", () => {
         expect(res[0]).toEqual({ id: 1, model: "Xiaomi" });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -37,7 +37,7 @@ describe("Test the phone database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -49,7 +49,7 @@ describe("Test the phone database operations", () => {
           expect(res2).toEqual([]);
         })
         .catch((err) => {
-          console.log(err);
+          expect(err).toMatch("error");
         });
     });
   });
@@ -62,7 +62,7 @@ describe("Test the phone database operations", () => {
           expect(res2[0]).toEqual({ id: 2, model: "New Model" });
         })
         .catch((err) => {
-          console.log(err);
+          expect(err).toMatch("error");
         });
     });
   });

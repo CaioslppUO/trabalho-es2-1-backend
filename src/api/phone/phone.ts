@@ -53,20 +53,16 @@ export const Phone = (): Phone => {
    * @returns The id of the inserted phone.
    */
   const insert = (model: string): Promise<{ id: number }> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        let new_phone: PhoneObject = { model };
-        crud
-          .insert("Phone", new_phone)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      let new_phone: PhoneObject = { model };
+      crud
+        .insert("Phone", new_phone)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -76,19 +72,15 @@ export const Phone = (): Phone => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .remove("Phone", id)
-          .then(() => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(false);
-      }
+    return new Promise((resolve) => {
+      crud
+        .remove("Phone", id)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -97,19 +89,15 @@ export const Phone = (): Phone => {
    * @returns Phones in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .find("Phone")
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .find("Phone")
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -119,19 +107,15 @@ export const Phone = (): Phone => {
    * @returns Phone.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve, rejects) => {
-      try {
-        crud
-          .findOne("Phone", id)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        rejects(error);
-      }
+    return new Promise((resolve) => {
+      crud
+        .findOne("Phone", id)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 
@@ -142,20 +126,16 @@ export const Phone = (): Phone => {
    * @returns True if could update the Phone.
    */
   const update = (id: number, model: string): Promise<boolean> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let new_phone: PhoneObject = { model };
-        crud
-          .update("Phone", id, new_phone)
-          .then((res) => {
-            resolve(true);
-          })
-          .catch((err) => {
-            throw err;
-          });
-      } catch (error) {
-        reject(false);
-      }
+    return new Promise(async (resolve) => {
+      let new_phone: PhoneObject = { model };
+      crud
+        .update("Phone", id, new_phone)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          throw err;
+        });
     });
   };
 

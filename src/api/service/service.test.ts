@@ -14,7 +14,7 @@ describe("Test the service database operations", () => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -25,7 +25,7 @@ describe("Test the service database operations", () => {
         expect(res[0]).toEqual({ id: 2, type: "Troca de Tela", price: 120.99 });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -42,7 +42,7 @@ describe("Test the service database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -55,7 +55,7 @@ describe("Test the service database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -72,7 +72,7 @@ describe("Test the service database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 });

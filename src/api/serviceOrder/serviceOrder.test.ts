@@ -13,7 +13,7 @@ describe("Test the service order database operations", () => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -24,7 +24,7 @@ describe("Test the service order database operations", () => {
         expect(res[0]).toEqual({ id: 2, idClient: 2, idPhone: 2 });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -32,16 +32,21 @@ describe("Test the service order database operations", () => {
     serviceOrder
       .insert(3, 5)
       .then((res) => {
-        serviceOrder.findOne(res.id).then((res2) => {
-          expect(res2[0]).toEqual({
-            id: res.id,
-            idClient: 3,
-            idPhone: 5,
+        serviceOrder
+          .findOne(res.id)
+          .then((res2) => {
+            expect(res2[0]).toEqual({
+              id: res.id,
+              idClient: 3,
+              idPhone: 5,
+            });
+          })
+          .catch((err) => {
+            expect(err).toMatch("error");
           });
-        });
       })
       .catch((err) => {
-        expect(err).toEqual("Error");
+        expect(err).toMatch("error");
       });
   });
 
@@ -54,7 +59,7 @@ describe("Test the service order database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -71,7 +76,7 @@ describe("Test the service order database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -93,7 +98,18 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err.id).toBe(-1);
+        expect(err.message).toBe("could not insert");
+      });
+  });
+
+  test("Should not allow insert serviceOrder with client and phone that doesn't exist", () => {
+    serviceOrder
+      .insert(10, 10)
+      .then((res) => {
+        expect(res.id).toBe(-1);
+      })
+      .catch((err) => {
+        expect(err.message).toBe("could not insert");
       });
   });
 });

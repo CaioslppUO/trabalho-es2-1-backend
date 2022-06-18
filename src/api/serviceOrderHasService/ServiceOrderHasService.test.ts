@@ -14,7 +14,7 @@ describe("Test the service order has service database operations", () => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -25,7 +25,7 @@ describe("Test the service order has service database operations", () => {
         expect(res[0]).toEqual({ idServiceOrder: 2, idService: 2 });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 
@@ -40,7 +40,7 @@ describe("Test the service order has service database operations", () => {
           });
         })
         .catch((err) => {
-          console.log(err);
+          expect(err).toMatch("error");
         });
     });
   });
@@ -53,7 +53,7 @@ describe("Test the service order has service database operations", () => {
           expect(res2).toEqual([]);
         })
         .catch((err) => {
-          console.log(err);
+          expect(err).toMatch("error");
         });
     });
   });
@@ -70,7 +70,7 @@ describe("Test the service order has service database operations", () => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        expect(err).toMatch("error");
       });
   });
 });
