@@ -106,14 +106,14 @@ export const Crud = (): Crud => {
     table: string,
     content: Type
   ): Promise<{ id: number }> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database(table)
         .insert(content)
         .then((res) => {
           resolve({ id: res[0] });
         })
         .catch(() => {
-          throw new Error("could not insert");
+          rejects("could not insert");
         });
     });
   };

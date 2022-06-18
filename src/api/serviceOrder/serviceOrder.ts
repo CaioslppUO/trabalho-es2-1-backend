@@ -83,21 +83,21 @@ export const ServiceOrder = (): ServiceOrder => {
                       resolve(res);
                     })
                     .catch((err) => {
-                      throw err;
+                      rejects(err);
                     });
                 } else {
-                  rejects({ id: -1 });
+                  rejects("could not insert");
                 }
               })
               .catch((err) => {
-                throw err;
+                rejects(err);
               });
           } else {
-            rejects({ id: -1 });
+            rejects("could not insert");
           }
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -108,14 +108,14 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .remove("ServiceOrder", id)
         .then(() => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -125,14 +125,14 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns ServiceOrders in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .find("ServiceOrder")
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -143,14 +143,14 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns ServiceOrder.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .findOne("ServiceOrder", id)
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -167,7 +167,7 @@ export const ServiceOrder = (): ServiceOrder => {
     idClient: number,
     idPhone: number
   ): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_ServiceOrder: ServiceOrderObject = { idClient, idPhone };
       crud
         .update("ServiceOrder", id, new_ServiceOrder)
@@ -175,7 +175,7 @@ export const ServiceOrder = (): ServiceOrder => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };

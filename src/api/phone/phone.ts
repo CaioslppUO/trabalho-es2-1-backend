@@ -53,7 +53,7 @@ export const Phone = (): Phone => {
    * @returns The id of the inserted phone.
    */
   const insert = (model: string): Promise<{ id: number }> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_phone: PhoneObject = { model };
       crud
         .insert("Phone", new_phone)
@@ -61,7 +61,7 @@ export const Phone = (): Phone => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -72,14 +72,14 @@ export const Phone = (): Phone => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .remove("Phone", id)
         .then(() => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -89,14 +89,14 @@ export const Phone = (): Phone => {
    * @returns Phones in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .find("Phone")
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -107,14 +107,14 @@ export const Phone = (): Phone => {
    * @returns Phone.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .findOne("Phone", id)
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -126,7 +126,7 @@ export const Phone = (): Phone => {
    * @returns True if could update the Phone.
    */
   const update = (id: number, model: string): Promise<boolean> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       let new_phone: PhoneObject = { model };
       crud
         .update("Phone", id, new_phone)
@@ -134,7 +134,7 @@ export const Phone = (): Phone => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };

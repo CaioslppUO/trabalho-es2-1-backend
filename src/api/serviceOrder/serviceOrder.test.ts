@@ -13,7 +13,7 @@ describe("Test the service order database operations", () => {
         );
       })
       .catch((err) => {
-        expect(err).toMatch("error");
+        expect(err).toBe("error");
       });
   });
 
@@ -24,29 +24,29 @@ describe("Test the service order database operations", () => {
         expect(res[0]).toEqual({ id: 2, idClient: 2, idPhone: 2 });
       })
       .catch((err) => {
-        expect(err).toMatch("error");
+        expect(err).toBe("error");
       });
   });
 
   test("Should insert a service order", () => {
     serviceOrder
-      .insert(3, 5)
+      .insert(4, 5)
       .then((res) => {
         serviceOrder
           .findOne(res.id)
           .then((res2) => {
             expect(res2[0]).toEqual({
               id: res.id,
-              idClient: 3,
+              idClient: 4,
               idPhone: 5,
             });
           })
           .catch((err) => {
-            expect(err).toMatch("error");
+            expect(err).toBe("error");
           });
       })
       .catch((err) => {
-        expect(err).toMatch("error");
+        expect(err).toBe("error");
       });
   });
 
@@ -59,7 +59,7 @@ describe("Test the service order database operations", () => {
         });
       })
       .catch((err) => {
-        expect(err).toMatch("error");
+        expect(err).toBe("error");
       });
   });
 
@@ -76,7 +76,7 @@ describe("Test the service order database operations", () => {
         });
       })
       .catch((err) => {
-        expect(err).toMatch("error");
+        expect(err).toBe("error");
       });
   });
 
@@ -87,7 +87,7 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err.id).toBe(-1);
+        expect(err).toBe("could not insert");
       });
   });
 
@@ -98,7 +98,7 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err.message).toBe("could not insert");
+        expect(err).toBe("could not insert");
       });
   });
 
@@ -109,7 +109,7 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err.message).toBe("could not insert");
+        expect(err).toBe("could not insert");
       });
   });
 });

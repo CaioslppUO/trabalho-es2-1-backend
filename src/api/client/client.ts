@@ -70,7 +70,7 @@ export const Client = (): Client => {
     email: string,
     cpf: string
   ): Promise<{ id: number }> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_Client: ClientObject = { name, email, cpf };
       crud
         .insert("Client", new_Client)
@@ -78,7 +78,7 @@ export const Client = (): Client => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -89,14 +89,14 @@ export const Client = (): Client => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .remove("Client", id)
         .then(() => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -106,14 +106,14 @@ export const Client = (): Client => {
    * @returns Clients in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .find("Client")
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -124,14 +124,14 @@ export const Client = (): Client => {
    * @returns Client.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .findOne("Client", id)
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -150,13 +150,15 @@ export const Client = (): Client => {
     email: string,
     cpf: string
   ): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_Client: ClientObject = { name, email, cpf };
       crud
         .update("Client", id, new_Client)
-        .then(() => resolve(true))
+        .then(() => {
+          resolve(true);
+        })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };

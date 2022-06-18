@@ -71,7 +71,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
     idServiceOrder: number,
     idService: number
   ): Promise<{ id: number }> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_ServiceOrder: ServiceOrderHasServiceObject = {
         idServiceOrder,
         idService,
@@ -82,7 +82,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -97,7 +97,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
     serviceOrderId: number,
     serviceId: number
   ): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .removeNoPrimary(
           "ServiceOrderHasService",
@@ -110,7 +110,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -120,14 +120,14 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
    * @returns ServiceOrderHasService in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .find("ServiceOrderHasService")
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -139,7 +139,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
    * @returns ServiceOrderHasService.
    */
   const findOne = (serviceOrderId: number, serviceId: number): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .findOneNoPrimary(
           "ServiceOrderHasService",
@@ -152,7 +152,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -171,7 +171,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
     idServiceOrder: number,
     idService: number
   ): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_ServiceOrder: ServiceOrderHasServiceObject = {
         idServiceOrder,
         idService,
@@ -189,7 +189,7 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };

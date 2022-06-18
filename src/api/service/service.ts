@@ -57,7 +57,7 @@ export const Service = (): Service => {
    * @returns The id of the inserted Service.
    */
   const insert = (type: string, price: number): Promise<{ id: number }> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       let new_service: ServiceObject = { type, price };
       crud
         .insert("Service", new_service)
@@ -65,7 +65,7 @@ export const Service = (): Service => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -76,14 +76,14 @@ export const Service = (): Service => {
    * @returns True if were able to remove.
    */
   const remove = (id: number): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .remove("Service", id)
         .then(() => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -93,14 +93,14 @@ export const Service = (): Service => {
    * @returns Services in the database.
    */
   const find = (): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .find("Service")
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -111,14 +111,14 @@ export const Service = (): Service => {
    * @returns Service.
    */
   const findOne = (id: number): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejects) => {
       crud
         .findOne("Service", id)
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
@@ -135,7 +135,7 @@ export const Service = (): Service => {
     type: string,
     price: number
   ): Promise<boolean> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       let new_service: ServiceObject = { type, price };
       crud
         .update("Service", id, new_service)
@@ -143,7 +143,7 @@ export const Service = (): Service => {
           resolve(true);
         })
         .catch((err) => {
-          throw err;
+          rejects(err);
         });
     });
   };
