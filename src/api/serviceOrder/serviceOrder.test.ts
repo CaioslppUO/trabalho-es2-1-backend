@@ -87,7 +87,7 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err).toBe("could not insert");
+        expect(err).toBe("phone doesn't exist");
       });
   });
 
@@ -98,7 +98,7 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err).toBe("could not insert");
+        expect(err).toBe("client doesn't exist");
       });
   });
 
@@ -109,7 +109,7 @@ describe("Test the service order database operations", () => {
         expect(res.id).toBe(-1);
       })
       .catch((err) => {
-        expect(err).toBe("could not insert");
+        expect(err).toBe("phone doesn't exist");
       });
   });
 });

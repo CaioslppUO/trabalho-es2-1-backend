@@ -1,4 +1,6 @@
 import { Crud } from "../knex/crud";
+import { Service } from "../service/service";
+import { ServiceOrder } from "../serviceOrder/serviceOrder";
 
 /**
  * Database ServiceOrder interface.
@@ -76,14 +78,27 @@ export const ServiceOrderHasService = (): ServiceOrderHasService => {
         idServiceOrder,
         idService,
       };
-      crud
-        .insert("ServiceOrderHasService", new_ServiceOrder)
-        .then((res) => {
-          resolve(res);
-        })
-        .catch((err) => {
-          rejects(err);
+      let service = Service();
+      service.findOne(idService).then((res) => {
+        if (res.length <= 0) {
+          rejects("invalid service id");
+        }
+        let serviceOrder = ServiceOrder();
+        serviceOrder.findOne(idServiceOrder).then((res2) => {
+          if (res2.length <= 0) {
+            rejects("invalid service order id");
+          } else {
+            crud
+              .insert("ServiceOrderHasService", new_ServiceOrder)
+              .then((res) => {
+                resolve(res);
+              })
+              .catch((err) => {
+                rejects(err);
+              });
+          }
         });
+      });
     });
   };
 

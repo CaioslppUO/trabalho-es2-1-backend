@@ -73,4 +73,20 @@ describe("Test the service order has service database operations", () => {
         expect(err).toMatch("error");
       });
   });
+
+  test("Should not insert a service order has service with invalid service id", async () => {
+    let res = await serviceOrderHasService
+      .insert(5, 17)
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("invalid service id");
+  });
+
+  test("Should not insert a service order has service with invalid service order id", async () => {
+    let res = await serviceOrderHasService
+      .insert(17, 5)
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("invalid service order id");
+  });
 });

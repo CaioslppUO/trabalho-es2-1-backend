@@ -66,4 +66,20 @@ describe("Test the phone database operations", () => {
         });
     });
   });
+
+  test("Should not insert a duplicated model", async () => {
+    let res = await phone
+      .insert("Xiaomi")
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("could not insert");
+  });
+
+  test("Should not insert an empty model", async () => {
+    let res = await phone
+      .insert("")
+      .then(() => {})
+      .catch((err) => err);
+    expect(res).toBe("could not insert");
+  });
 });

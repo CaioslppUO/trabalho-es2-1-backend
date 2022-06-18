@@ -56,6 +56,9 @@ export const Phone = (): Phone => {
    */
   const insert = (model: string): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
+      if (model.length <= 0) {
+        rejects("could not insert");
+      }
       let new_phone: PhoneObject = { model };
       crud
         .insert("Phone", new_phone)

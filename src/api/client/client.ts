@@ -71,6 +71,14 @@ export const Client = (): Client => {
     cpf: string
   ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
+      const re = /\S+@\S+\.\S+/;
+      if (cpf.length != 11) {
+        rejects("invalid cpf size");
+      } else if (!re.test(email)) {
+        rejects("invalid email");
+      } else if (name.length <= 0) {
+        rejects("client name must not be empty");
+      }
       let new_Client: ClientObject = { name, email, cpf };
       crud
         .insert("Client", new_Client)
