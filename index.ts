@@ -1,3 +1,6 @@
-import { database } from "./src/api/knex/knex";
+import { Phone } from "./src/api/phone/phone";
 
-console.log("Hello World!");
+let p = Phone();
+p.removePhone(2).then((res) => {
+  console.log(res);
+});
