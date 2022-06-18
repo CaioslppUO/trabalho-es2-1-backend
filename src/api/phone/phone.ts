@@ -13,14 +13,14 @@ export interface Phone {
    * @param model Model of the phone.
    * @returns The id of the inserted phone.
    */
-  insertPhone: (model: string) => Promise<{ id: number }>;
+  insert: (model: string) => Promise<{ id: number }>;
 
   /**
    * Remove a Phone from the database.
    * @param id Phone id
    * @returns True if were able to remove.
    */
-  removePhone: (id: number) => Promise<boolean>;
+  remove: (id: number) => Promise<boolean>;
 
   /**
    * Return every Phone in the database.
@@ -52,7 +52,7 @@ export const Phone = (): Phone => {
    * @param model Model of the phone.
    * @returns The id of the inserted phone.
    */
-  const insertPhone = (model: string): Promise<{ id: number }> => {
+  const insert = (model: string): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
       try {
         let new_phone: PhoneObject = { model };
@@ -69,7 +69,7 @@ export const Phone = (): Phone => {
    * @param id Phone id
    * @returns True if were able to remove.
    */
-  const removePhone = (id: number): Promise<boolean> => {
+  const remove = (id: number): Promise<boolean> => {
     return new Promise(async (resolve, rejects) => {
       try {
         await crud.remove("Phone", id);
@@ -128,8 +128,8 @@ export const Phone = (): Phone => {
   };
 
   return {
-    insertPhone,
-    removePhone,
+    insert,
+    remove,
     find,
     findOne,
     update,
