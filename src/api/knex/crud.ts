@@ -101,6 +101,14 @@ export interface Crud {
     field_2: string,
     content: Type
   ) => Promise<Knex.QueryBuilder<any, number>>;
+
+  findServiceOrderCount: () => Promise<any>;
+
+  /**
+   * Select and return all objects from serviceOrder table.
+   * @returns All objects from serviceOrder table.
+   */
+  findServiceOrder: () => Promise<any>;
 }
 
 export const Crud = (): Crud => {
@@ -242,7 +250,53 @@ export const Crud = (): Crud => {
       .update(content);
   };
 
+  /**
+   * Select and return all objects from serviceOrder table.
+   * @returns All objects from serviceOrder table.
+   */
+  const findServiceOrder = (): Promise<any> => {
+    return database("ServiceOrder")
+      .select(
+        "c.name",
+        "c.email",
+        "c.cpf",
+        "ServiceOrder.id",
+        "Service.type as ServiceType",
+        "Service.price as ServicePrice",
+        "ServiceOrder.idPhone",
+        "Phone.model as phoneModel"
+      )
+      .join("Client as c", "ServiceOrder.idClient", "c.id")
+      .join(
+        "ServiceOrderHasService as sos",
+        "ServiceOrder.id",
+        "sos.idServiceOrder"
+      )
+      .join("Service", "sos.idService", "Service.id")
+      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+
+      .catch((err) => {
+        throw new Error(err);
+      });
+  };
+
+  const findServiceOrderCount = (): Promise<any> => {
+    return database("ServiceOrderHasService")
+      .join(
+        "ServiceOrder",
+        "ServiceOrderHasService.idServiceOrder",
+        "ServiceOrder.id"
+      )
+      .select("ServiceOrder.idPhone", "ServiceOrderHasService.idService")
+      .count("ServiceOrder.idPhone as countModel")
+      .catch((err) => {
+        throw new Error(err);
+      });
+  };
+
   return {
+    findServiceOrder,
+    findServiceOrderCount,
     insert,
     remove,
     removeNoPrimary,

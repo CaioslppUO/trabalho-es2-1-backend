@@ -136,7 +136,7 @@ export const ServiceOrder = (): ServiceOrder => {
     return new Promise((resolve, rejects) => {
       try {
         crud
-          .find("ServiceOrder")
+          .findServiceOrder()
           .then((res) => {
             resolve(res);
           })
