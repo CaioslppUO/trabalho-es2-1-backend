@@ -42,6 +42,8 @@ export interface Phone {
    * @returns True if could update the Phone.
    */
   update: (id: number, model: string) => Promise<boolean>;
+
+  findModelsRank: () => Promise<any>;
 }
 
 export const Phone = (): Phone => {
@@ -159,7 +161,33 @@ export const Phone = (): Phone => {
     });
   };
 
+  const findModelsRank = (): Promise<any> => {
+    return new Promise((resolve, rejects) => {
+      try {
+        crud
+          .find("Phone")
+          .then((res) => {
+            crud
+              .findServiceOrderCount()
+              .then((dt) => {
+                console.log(dt);
+                resolve(res);
+              })
+              .catch((err) => {
+                throw err;
+              });
+          })
+          .catch((err) => {
+            throw err;
+          });
+      } catch (error) {
+        rejects(error);
+      }
+    });
+  };
+
   return {
+    findModelsRank,
     insert,
     remove,
     find,
