@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { database } from "./src/api/knex/knex";
+require("dotenv").config();
 
 var app = require("express")();
 var bodyParser = require("body-parser");
@@ -7,8 +8,7 @@ var server = require("http").Server(app);
 var jsonParser = bodyParser.json();
 const cors = require("cors");
 
-const port = 3333;
-const host = "127.0.0.1";
+const port = process.env.PORT || 3333;
 
 // Importing routes
 import * as clientRouter from "./src/routes/client";
@@ -22,6 +22,7 @@ const initialize_db = (wipe_db: boolean): Promise<void> => {
   return new Promise(async (resolve, rejects) => {
     if (!fs.existsSync(__dirname + "/src/database/data.sqlite3")) {
       await database.migrate.latest();
+      await database.seed.run();
     }
     if (wipe_db) {
       await database.seed.run();
@@ -53,7 +54,7 @@ initialize_db(false).then(() => {
   // ServiceOrderHasService routes
   app.use("/api", serviceOrderHasServiceRouter.router);
 
-  server.listen(port, host, () => {
-    console.log(`Listening on ${host}:${port}`);
+  server.listen(port, () => {
+    console.log(`Listening on :${port}`);
   });
 });

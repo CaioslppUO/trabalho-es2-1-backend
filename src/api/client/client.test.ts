@@ -5,43 +5,63 @@ describe("Test the client database operations", () => {
   let client = Client();
 
   test("Should select all clients", () => {
-    client.find().then((res) => {
-      expect(res.length).toBeGreaterThanOrEqual(5);
-      expect(Object.keys(res[0]).sort()).toEqual(
-        ["id", "name", "email", "cpf"].sort()
-      );
-    });
+    client
+      .find()
+      .then((res) => {
+        expect(res.length).toBeGreaterThanOrEqual(5);
+        expect(Object.keys(res[0]).sort()).toEqual(
+          ["id", "name", "email", "cpf"].sort()
+        );
+      })
+      .catch((err) => {
+        expect(err).toMatch("error");
+      });
   });
 
   test("Should select a client", () => {
-    client.findOne(1).then((res) => {
-      expect(res[0]).toEqual({
-        id: 1,
-        name: "Caio Cezar das Neves Moreira",
-        email: "caioslppuo@gmail.com",
-        cpf: "12345678910",
+    client
+      .findOne(1)
+      .then((res) => {
+        expect(res[0]).toEqual({
+          id: 1,
+          name: "Caio Cezar das Neves Moreira",
+          email: "caioslppuo@gmail.com",
+          cpf: "12345678910",
+        });
+      })
+      .catch((err) => {
+        expect(err).toMatch("error");
       });
-    });
   });
 
   test("Should insert a client", () => {
     client.insert("Nelson", "nelsinho@gmail.com", "12345678916").then((res) => {
-      client.findOne(res.id).then((res2) => {
-        expect(res2[0]).toEqual({
-          id: res.id,
-          name: "Nelson",
-          email: "nelsinho@gmail.com",
-          cpf: "12345678916",
+      client
+        .findOne(res.id)
+        .then((res2) => {
+          expect(res2[0]).toEqual({
+            id: res.id,
+            name: "Nelson",
+            email: "nelsinho@gmail.com",
+            cpf: "12345678916",
+          });
+        })
+        .catch((err) => {
+          expect(err).toMatch("error");
         });
-      });
     });
   });
 
   test("Should delete a client", () => {
     client.remove(3).then((res) => {
-      client.findOne(3).then((res2) => {
-        expect(res2).toEqual([]);
-      });
+      client
+        .findOne(3)
+        .then((res2) => {
+          expect(res2).toEqual([]);
+        })
+        .catch((err) => {
+          expect(err).toMatch("error");
+        });
     });
   });
 
@@ -57,6 +77,28 @@ describe("Test the client database operations", () => {
             cpf: "12345678919",
           });
         });
+      })
+      .catch((err) => {
+        expect(err).toMatch("error");
+      });
+  });
+
+  test("Should not insert client with duplicated cpf", async () => {
+    await client
+      .insert("Luiz Afonso", "luizafonso@gmail.com", "12345678910")
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+        expect(err).toBe("could not insert");
+      });
+  });
+
+  test("Should not insert client with duplicated email", async () => {
+    await client
+      .insert("Albertinho", "caioslppuo@gmail.com", "12344678910")
+      .then(() => {})
+      .catch((err) => {
+        expect(err).toBe("could not insert");
       });
   });
 });
