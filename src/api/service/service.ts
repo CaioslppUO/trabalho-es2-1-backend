@@ -81,9 +81,17 @@ export const Service = (): Service => {
   const remove = (id: number): Promise<boolean> => {
     return new Promise((resolve, rejects) => {
       crud
-        .remove("Service", id)
-        .then(() => {
-          resolve(true);
+        .findOne("Service", id)
+        .then((res) => {
+          res[0].deleted = true;
+          crud
+            .update("Service", id, res[0])
+            .then(() => {
+              resolve(true);
+            })
+            .catch((err) => {
+              rejects(err);
+            });
         })
         .catch((err) => {
           rejects(err);

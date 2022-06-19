@@ -24,7 +24,12 @@ describe("Test the service database operations", () => {
           .catch((err) => err);
       })
       .catch((err) => err);
-    expect(res).toEqual({ id: res.id, type: "Novo Serviço", price: 20.23 });
+    expect(res).toEqual({
+      id: res.id,
+      type: "Novo Serviço",
+      price: 20.23,
+      deleted: 0,
+    });
   });
 
   test("Should delete a service", async () => {
@@ -36,14 +41,14 @@ describe("Test the service database operations", () => {
         return service
           .findOne(1)
           .then((res) => {
-            return res;
+            return res[0];
           })
           .catch((err) => err);
       })
       .catch((err) => err);
     expect(res).not.toBe("undefined");
-    expect(res.length).not.toBe("undefined");
-    expect(res.length).toBe(0);
+    expect(res.deleted).not.toBe("undefined");
+    expect(res.deleted).toEqual(1);
   });
 
   test("Should select on service", async () => {
@@ -53,7 +58,12 @@ describe("Test the service database operations", () => {
       .findOne(2)
       .then((res) => res[0])
       .catch((err) => err);
-    expect(res).toEqual({ id: 2, type: "Troca de Tela", price: 120.99 });
+    expect(res).toEqual({
+      id: 2,
+      type: "Troca de Tela",
+      price: 120.99,
+      deleted: 0,
+    });
   });
 
   test("Should select all services", async () => {
@@ -80,7 +90,12 @@ describe("Test the service database operations", () => {
           .catch((err) => err);
       })
       .catch((err) => err);
-    expect(res).toEqual({ id: 1, type: "Novo Serviço", price: 4.99 });
+    expect(res).toEqual({
+      id: 1,
+      type: "Novo Serviço",
+      price: 4.99,
+      deleted: 0,
+    });
   });
 
   test("Should not insert duplicated service type", async () => {
