@@ -80,3 +80,100 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
     return res.status(400).send({ error });
   }
 });
+
+router.get("/averageServiceDuration", jsonParser, (req: any, res: any) => {
+  try {
+    return serviceOrder.getAverageServiceDuration().then((data) => {
+      return res.status(200).send(data);
+    });
+  } catch (error) {
+    return res.status(400).send({ error });
+  }
+});
+
+router.get(
+  "/averageServiceOrderQuantityByPeriod",
+  jsonParser,
+  (req: any, res: any) => {
+    try {
+      if (!req.body.beginDate)
+        return res.status(400).send("Could not beginDate");
+      if (!req.body.endDate) return res.status(400).send("Could not endDate");
+      return serviceOrder
+        .getAverageServiceOrderQuantityByPeriod(
+          req.body.beginDate,
+          req.body.endDate
+        )
+        .then((data) => {
+          return res.status(200).send(data);
+        });
+    } catch (error) {
+      return res.status(400).send({ error });
+    }
+  }
+);
+
+router.get(
+  "/averageValueFromServiceOrderByPeriod",
+  jsonParser,
+  (req: any, res: any) => {
+    try {
+      if (!req.body.beginDate)
+        return res.status(400).send("Could not beginDate");
+      if (!req.body.endDate) return res.status(400).send("Could not endDate");
+      return serviceOrder
+        .getAverageValueFromServicesOrderByPeriod(
+          req.body.beginDate,
+          req.body.endDate
+        )
+        .then((data) => {
+          return res.status(200).send(data);
+        });
+    } catch (error) {
+      return res.status(400).send({ error });
+    }
+  }
+);
+
+router.get(
+  "/totalValueFromServicesByPeriod",
+  jsonParser,
+  (req: any, res: any) => {
+    try {
+      if (!req.body.beginDate)
+        return res.status(400).send("Could not beginDate");
+      if (!req.body.endDate) return res.status(400).send("Could not endDate");
+      return serviceOrder
+        .getTotalValueFromServicesByPeriod(req.body.beginDate, req.body.endDate)
+        .then((data) => {
+          return res.status(200).send(data);
+        });
+    } catch (error) {
+      return res.status(400).send({ error });
+    }
+  }
+);
+
+router.get("/totalServiceOrderByClient", jsonParser, (req: any, res: any) => {
+  try {
+    return serviceOrder.getTotalServiceOrderByClient().then((data) => {
+      return res.status(200).send(data);
+    });
+  } catch (error) {
+    return res.status(400).send({ error });
+  }
+});
+
+router.get("/totalServiceOrderByPeriod", jsonParser, (req: any, res: any) => {
+  try {
+    if (!req.body.beginDate) return res.status(400).send("Could not beginDate");
+    if (!req.body.endDate) return res.status(400).send("Could not endDate");
+    return serviceOrder
+      .getTotalServiceOrderByPeriod(req.body.beginDate, req.body.endDate)
+      .then((data) => {
+        return res.status(200).send(data);
+      });
+  } catch (error) {
+    return res.status(400).send({ error });
+  }
+});
