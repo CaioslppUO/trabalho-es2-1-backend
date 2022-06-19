@@ -2,6 +2,11 @@ import { Phone } from "./phone";
 import { database } from "../knex/knex";
 
 describe("Test the phone database operations", () => {
+  afterAll(async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+  });
+
   let phone = Phone();
 
   test("Should not insert a duplicated model", async () => {

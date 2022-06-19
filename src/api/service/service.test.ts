@@ -2,6 +2,11 @@ import { Service } from "./service";
 import { database } from "../knex/knex";
 
 describe("Test the service database operations", () => {
+  afterAll(async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+  });
+
   let service = Service();
 
   test("Should not insert duplicated service type", async () => {

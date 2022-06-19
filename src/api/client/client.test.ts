@@ -2,6 +2,11 @@ import { Client } from "./client";
 import { database } from "../knex/knex";
 
 describe("Test the client database operations", () => {
+  afterAll(async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+  });
+
   let client = Client();
 
   test("Should not insert client with duplicated cpf", async () => {
