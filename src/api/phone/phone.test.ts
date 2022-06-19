@@ -42,6 +42,7 @@ describe("Test the phone database operations", () => {
       })
       .catch((err) => err);
     expect(res).not.toBe("undefined");
+    expect(res.length).not.toBe("undefined");
     expect(res.length).toBe(0);
   });
 
