@@ -1,4 +1,5 @@
 import { database } from "./knex";
+import { knex } from "knex";
 
 export interface Crud {
   /**
@@ -93,6 +94,21 @@ export interface Crud {
     field_2: string,
     content: Type
   ) => Promise<number>;
+
+  /**
+   * Select and return all objects from serviceOrder table.
+   * @returns All objects from serviceOrder table.
+   */
+  findServiceOrder: () => Promise<any>;
+
+  /**
+   * Return on object from serviceOrder table.
+   * @param id Id of the object.
+   * @returns Object.
+   */
+  findOneServiceOrder: (id: number) => Promise<any[]>;
+
+  findServiceByOrderService: (id: number) => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -290,7 +306,63 @@ export const Crud = (): Crud => {
     });
   };
 
+  /**
+   * Select and return all objects from serviceOrder table.
+   * @returns All objects from serviceOrder table.
+   */
+  const findServiceOrder = (): Promise<any> => {
+    return database("ServiceOrder")
+      .select(
+        "c.name",
+        "c.email",
+        "c.cpf",
+        "ServiceOrder.id",
+        "ServiceOrder.idPhone",
+        "Phone.model as phoneModel"
+      )
+      .join("Client as c", "ServiceOrder.idClient", "c.id")
+      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+      .catch((err) => {
+        throw new Error(err);
+      });
+  };
+
+  /**
+   * Select and return all objects from serviceOrder table.
+   * @returns All objects from serviceOrder table.
+   */
+  const findOneServiceOrder = (id: Number): Promise<any> => {
+    return database("ServiceOrder")
+      .select(
+        "c.name",
+        "c.email",
+        "c.cpf",
+        "ServiceOrder.id",
+        "ServiceOrder.idPhone",
+        "Phone.model as phoneModel"
+      )
+      .join("Client as c", "ServiceOrder.idClient", "c.id")
+      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+      .where({ "ServiceOrder.id": Number(id) })
+      .catch((err) => {
+        throw new Error(err);
+      });
+  };
+
+  const findServiceByOrderService = (id: number): Promise<any> => {
+    return database("ServiceOrderHasService")
+      .select("Service.type", "Service.price")
+      .join("Service", "ServiceOrderHasService.idService", "Service.id")
+      .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
+      .catch((err) => {
+        throw new Error(err);
+      });
+  };
+
   return {
+    findServiceByOrderService,
+    findOneServiceOrder,
+    findServiceOrder,
     insert,
     remove,
     removeNoPrimary,
