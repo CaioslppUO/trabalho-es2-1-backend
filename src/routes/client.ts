@@ -24,6 +24,7 @@ router.get("/client", jsonParser, (req: any, res: any) => {
 
 router.get("/client=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return client.findOne(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -34,6 +35,7 @@ router.get("/client=:id", jsonParser, (req: any, res: any) => {
 
 router.delete("/client=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return client.remove(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -44,6 +46,9 @@ router.delete("/client=:id", jsonParser, (req: any, res: any) => {
 
 router.post("/client", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.name) return res.status(400).send("Could not name");
+    if (!req.body.email) return res.status(400).send("Could not email");
+    if (!req.body.cpf) return res.status(400).send("Could not cpf");
     return client
       .insert(req.body.name, req.body.email, req.body.cpf)
       .then((data) => {
@@ -56,6 +61,10 @@ router.post("/client", jsonParser, (req: any, res: any) => {
 
 router.put("/client", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.id) return res.status(400).send("Could not id");
+    if (!req.body.name) return res.status(400).send("Could not name");
+    if (!req.body.email) return res.status(400).send("Could not email");
+    if (!req.body.cpf) return res.status(400).send("Could not cpf");
     return client
       .update(req.body.id, req.body.name, req.body.email, req.body.cpf)
       .then((data) => {

@@ -45,6 +45,8 @@ export interface Service {
    * @returns True if could update the Service.
    */
   update: (id: number, type: string, price: number) => Promise<boolean>;
+
+  findRankServiceByModel: () => Promise<any>;
 }
 
 export const Service = (): Service => {
@@ -159,7 +161,25 @@ export const Service = (): Service => {
     });
   };
 
+  /**
+   * Return a Service from the database.
+   * @returns Services order by model phone.
+   */
+  const findRankServiceByModel = (): Promise<any> => {
+    return new Promise((resolve, rejects) => {
+      crud
+        .findRankServiceByModel()
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejects(err);
+        });
+    });
+  };
+
   return {
+    findRankServiceByModel,
     insert,
     remove,
     find,

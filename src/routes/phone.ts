@@ -19,6 +19,7 @@ router.get("/phone", jsonParser, (req: any, res: any) => {
 
 router.get("/phone=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return phone.findOne(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -29,6 +30,7 @@ router.get("/phone=:id", jsonParser, (req: any, res: any) => {
 
 router.delete("/phone=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return phone.remove(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -39,6 +41,7 @@ router.delete("/phone=:id", jsonParser, (req: any, res: any) => {
 
 router.post("/phone", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.model) return res.status(400).send("Could not model");
     return phone.insert(req.body.model).then((data) => {
       return res.status(200).send(data);
     });
@@ -49,6 +52,8 @@ router.post("/phone", jsonParser, (req: any, res: any) => {
 
 router.put("/phone", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.id) return res.status(400).send("Could not id");
+    if (!req.body.model) return res.status(400).send("Could not model");
     return phone.update(req.body.id, req.body.model).then((data) => {
       return res.status(200).send(data);
     });
