@@ -11,7 +11,7 @@ describe("Test the service order database operations", () => {
   test("Should insert a service order", async () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
-    let res = await serviceOrder.insert(3, 5).then((res) => {
+    let res = await serviceOrder.insert(3, 5, [1, 2]).then((res) => {
       return serviceOrder
         .findOne(res.id)
         .then((res2) => {
@@ -25,9 +25,21 @@ describe("Test the service order database operations", () => {
       email: "arcanjolevi@gmail.com",
       name: "Leví Cícero Arcanjo",
       id: res.id,
+      idClient: 3,
       idPhone: 5,
       phoneModel: "Huawei",
-      services: [],
+      services: [
+        {
+          id: 1,
+          price: 33.5,
+          type: "Colocar Película",
+        },
+        {
+          id: 2,
+          price: 120.99,
+          type: "Troca de Tela",
+        },
+      ],
     });
   });
 
@@ -107,7 +119,7 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .insert(1, 10)
+      .insert(1, 10, [1, 2])
       .then(() => {})
       .catch((err) => err);
     expect(res).toBe("phone doesn't exist");
@@ -117,7 +129,7 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .insert(10, 1)
+      .insert(10, 1, [1, 2])
       .then((res) => {})
       .catch((err) => err);
     expect(res).toBe("client doesn't exist");
@@ -127,7 +139,7 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .insert(10, 10)
+      .insert(10, 10, [1, 2])
       .then((res) => {})
       .catch((err) => err);
     expect(res).toBe("phone doesn't exist");
