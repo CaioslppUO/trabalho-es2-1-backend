@@ -1,6 +1,11 @@
 import { ServiceOrder } from "./serviceOrder";
 import { database } from "../knex/knex";
 describe("Test the service order database operations", () => {
+  afterAll(async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+  });
+
   let serviceOrder = ServiceOrder();
 
   test("Should not allow to insert a serviceOrder with a phone that doesn't exist", async () => {

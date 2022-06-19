@@ -2,6 +2,11 @@ import { ServiceOrderHasService } from "./serviceOrderHasService";
 import { database } from "../knex/knex";
 
 describe("Test the service order has service database operations", () => {
+  afterAll(async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+  });
+
   let serviceOrderHasService = ServiceOrderHasService();
 
   test("Should not insert a service order has service with invalid service id", async () => {
