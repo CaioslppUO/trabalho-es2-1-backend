@@ -9,6 +9,85 @@ describe("Test the client database operations", () => {
 
   let client = Client();
 
+  test("Should insert a client", async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+    let res = await client
+      .insert("Novo Cliente", "newclient@gmail.com", "99345678910")
+      .then((res) => {
+        return client
+          .findOne(res.id)
+          .then((res2) => {
+            res2.id = res.id;
+            return res2[0];
+          })
+          .catch((err) => err);
+      })
+      .catch((err) => err);
+    expect(res).toEqual({
+      id: res.id,
+      name: "Novo Cliente",
+      email: "newclient@gmail.com",
+      cpf: "99345678910",
+    });
+  });
+
+  test("Should consult a client", async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+    let res = await client
+      .findOne(1)
+      .then((res) => res[0])
+      .catch((err) => err);
+    expect(res).toEqual({
+      id: 1,
+      name: "Caio Cezar das Neves Moreira",
+      email: "caioslppuo@gmail.com",
+      cpf: "12345678910",
+    });
+  });
+
+  test("Should consult all clients", async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+    let res = await client
+      .find()
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => err);
+    expect(res).not.toBe("undefined");
+    expect(res.length).not.toBe("undefined");
+    expect(res.length).toBe(5);
+  });
+
+  test("Should delete a client", async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+    let res = await client
+      .remove(2)
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toBe(true);
+  });
+
+  test("Should update a client", async () => {
+    await database("Client").truncate();
+    await database.seed.run();
+    let res = await client
+      .update(2, "Novo Nome", "novoemail@gmail.com", "77345678910")
+      .then((res) => {
+        return client.findOne(2).then((res2) => res2[0]);
+      })
+      .catch((err) => err);
+    expect(res).toEqual({
+      id: 2,
+      name: "Novo Nome",
+      email: "novoemail@gmail.com",
+      cpf: "77345678910",
+    });
+  });
+
   test("Should not insert client with duplicated cpf", async () => {
     await database("Client").truncate();
     await database.seed.run();
