@@ -30,14 +30,14 @@ export interface ServiceOrder {
    * Return every ServiceOrder in the database.
    * @returns ServiceOrders in the database.
    */
-  find: () => Promise<any>;
+  find: () => Promise<any[]>;
 
   /**
    * Return a ServiceOrder from the database.
    * @param id ServiceOrder id.
    * @returns ServiceOrder.
    */
-  findOne: (id: number) => Promise<any>;
+  findOne: (id: number) => Promise<any[]>;
 
   /**
    * Update an ServiceOrder in the database.
@@ -124,13 +124,12 @@ export const ServiceOrder = (): ServiceOrder => {
    * Return every ServiceOrder in the database.
    * @returns ServiceOrders in the database.
    */
-  const find = (): Promise<any> => {
+  const find = (): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
       try {
         crud
           .findServiceOrder()
           .then((res: any) => {
-            console.log(res[0].id);
             crud
               .findServiceByOrderService(res[0].id)
               .then((data) => {
@@ -155,20 +154,23 @@ export const ServiceOrder = (): ServiceOrder => {
    * @param id ServiceOrder id.
    * @returns ServiceOrder.
    */
-  const findOne = (id: number): Promise<any> => {
+  const findOne = (id: number): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
       crud
         .findOneServiceOrder(id)
         .then((res: any) => {
-          crud
-            .findServiceByOrderService(res[0].id)
-            .then((data) => {
-              res[0].services = data;
-              resolve(res);
-            })
-            .catch((err) => {
-              rejects(err);
-            });
+          if (res.length > 0)
+            crud
+              .findServiceByOrderService(res[0].id)
+              .then((data) => {
+                if (data.length > 0) res[0].services = data;
+                else res[0].services = [];
+                resolve(res);
+              })
+              .catch((err) => {
+                rejects(err);
+              });
+          else resolve(res);
         })
         .catch((err) => {
           rejects(err);
