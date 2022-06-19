@@ -9,6 +9,7 @@ import { resolve } from "path";
 interface ServiceOrderObject {
   idClient: number;
   idPhone: number;
+  beginDate: string;
 }
 
 export interface ServiceOrder {
@@ -16,12 +17,14 @@ export interface ServiceOrder {
    * Insert a new ServiceOrder in the database.
    * @param idClient Id of the Client.
    * @param idPhone Id of the Phone.
+   * @param beginDate Creation date of the service order.
    * @returns The id of the inserted ServiceOrder.
    */
   insert: (
     idClient: number,
     idPhone: number,
-    services: Array<Number>
+    services: Array<Number>,
+    beginDate: string
   ) => Promise<{ id: number }>;
 
   /**
@@ -49,9 +52,15 @@ export interface ServiceOrder {
    * @param id ServiceOrder id.
    * @param idClient New Client id.
    * @param idPhone New Phone id.
+   * @param beginDate New creation date.
    * @returns True if could update the ServiceOrder.
    */
-  update: (id: number, idClient: number, idPhone: number) => Promise<boolean>;
+  update: (
+    id: number,
+    idClient: number,
+    idPhone: number,
+    beginDate: string
+  ) => Promise<boolean>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -61,12 +70,14 @@ export const ServiceOrder = (): ServiceOrder => {
    * Insert a new ServiceOrder in the database.
    * @param idClient Id of the Client.
    * @param idPhone Id of the Phone.
+   * @param beginDate Creation date of the service order.
    * @returns The id of the inserted ServiceOrder.
    */
   const insert = async (
     idClient: number,
     idPhone: number,
-    services: Array<Number>
+    services: Array<Number>,
+    beginDate: string
   ): Promise<{ id: number }> => {
     return new Promise(async (resolve, rejects) => {
       let phone = Phone();
@@ -78,6 +89,7 @@ export const ServiceOrder = (): ServiceOrder => {
       let { id } = await crud.insert("ServiceOrder", {
         idClient,
         idPhone,
+        beginDate,
       });
       try {
         for (let i = 0; i < services.length; i++) {
@@ -101,9 +113,17 @@ export const ServiceOrder = (): ServiceOrder => {
   const remove = (id: number): Promise<boolean> => {
     return new Promise((resolve, rejects) => {
       crud
-        .remove("ServiceOrder", id)
-        .then(() => {
-          resolve(true);
+        .findOne("ServiceOrder", id)
+        .then((res) => {
+          res[0].canceled = true;
+          crud
+            .update("ServiceOrder", id, res[0])
+            .then(() => {
+              resolve(true);
+            })
+            .catch((err) => {
+              rejects(err);
+            });
         })
         .catch((err) => {
           rejects(err);
@@ -174,15 +194,21 @@ export const ServiceOrder = (): ServiceOrder => {
    * @param id ServiceOrder id.
    * @param idClient New Client id.
    * @param idPhone New Phone id.
+   * @param beginDate New creation date.
    * @returns True if could update the ServiceOrder.
    */
   const update = (
     id: number,
     idClient: number,
-    idPhone: number
+    idPhone: number,
+    beginDate: string
   ): Promise<boolean> => {
     return new Promise((resolve, rejects) => {
-      let new_ServiceOrder: ServiceOrderObject = { idClient, idPhone };
+      let new_ServiceOrder: ServiceOrderObject = {
+        idClient,
+        idPhone,
+        beginDate,
+      };
       crud
         .update("ServiceOrder", id, new_ServiceOrder)
         .then(() => {

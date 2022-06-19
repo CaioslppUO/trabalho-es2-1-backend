@@ -11,16 +11,21 @@ describe("Test the service order database operations", () => {
   test("Should insert a service order", async () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
-    let res = await serviceOrder.insert(3, 5, [1, 2]).then((res) => {
-      return serviceOrder
-        .findOne(res.id)
-        .then((res2) => {
-          res2[0].id = res.id;
-          return res2[0];
-        })
-        .catch((err) => err);
-    });
+    let res = await serviceOrder
+      .insert(3, 5, [1, 2], "2022-12-01")
+      .then((res) => {
+        return serviceOrder
+          .findOne(res.id)
+          .then((res2) => {
+            res2[0].id = res.id;
+            return res2[0];
+          })
+          .catch((err) => err);
+      });
     expect(res).toEqual({
+      endDate: null,
+      beginDate: "2022-12-01",
+      canceled: 0,
       cpf: "12345678912",
       email: "arcanjolevi@gmail.com",
       name: "Leví Cícero Arcanjo",
@@ -51,13 +56,13 @@ describe("Test the service order database operations", () => {
       .then(() => {
         return serviceOrder
           .findOne(3)
-          .then((res) => res)
+          .then((res) => res[0])
           .catch((err) => err);
       })
       .catch((err) => err);
-    expect(res).not.toBe("undefined");
-    expect(res.length).not.toBe("undefined");
-    expect(res.length).toBe(0);
+    expect(res).not.toBe(undefined);
+    expect(res.canceled).not.toBe(undefined);
+    expect(res.canceled).toBe(1);
   });
 
   test("Should get a service order", async () => {
@@ -68,6 +73,9 @@ describe("Test the service order database operations", () => {
       .then((res) => res[0])
       .catch((err) => err);
     expect(res).toEqual({
+      endDate: null,
+      beginDate: "2022-06-15",
+      canceled: 0,
       cpf: "12345678911",
       email: "lucasgrafimar@gmail.com",
       name: "Lucas Garavaglia",
@@ -95,17 +103,18 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .update(2, 3, 4)
+      .update(2, 3, 4, "2022-12-01")
       .then(() => {
         return serviceOrder
           .findOne(2)
-          .then((res) => {
-            return res[0];
-          })
+          .then((res) => res[0])
           .catch((err) => err);
       })
       .catch((err) => err);
     expect(res).toEqual({
+      endDate: null,
+      beginDate: "2022-12-01",
+      canceled: 0,
       cpf: "12345678912",
       email: "arcanjolevi@gmail.com",
       name: "Leví Cícero Arcanjo",
@@ -121,7 +130,7 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .insert(1, 10, [1, 2])
+      .insert(1, 10, [1, 2], "2022-12-01")
       .then(() => {})
       .catch((err) => err);
     expect(res).toBe("phone doesn't exist");
@@ -131,7 +140,7 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .insert(10, 1, [1, 2])
+      .insert(10, 1, [1, 2], "2022-12-01")
       .then((res) => {})
       .catch((err) => err);
     expect(res).toBe("client doesn't exist");
@@ -141,7 +150,7 @@ describe("Test the service order database operations", () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
-      .insert(10, 10, [1, 2])
+      .insert(10, 10, [1, 2], "2022-12-01")
       .then((res) => {})
       .catch((err) => err);
     expect(res).toBe("phone doesn't exist");

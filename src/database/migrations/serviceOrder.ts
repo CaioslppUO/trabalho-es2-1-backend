@@ -17,6 +17,9 @@ exports.up = function (knex: Knex<any, unknown[]>) {
       .notNullable()
       .references("id")
       .inTable("Phone");
+    tbl.boolean("canceled").notNullable().defaultTo(false);
+    tbl.date("beginDate").notNullable();
+    tbl.date("endDate");
   });
 };
 

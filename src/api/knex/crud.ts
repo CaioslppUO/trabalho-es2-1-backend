@@ -341,7 +341,10 @@ export const Crud = (): Crud => {
         "c.id as idClient",
         "ServiceOrder.id",
         "ServiceOrder.idPhone",
-        "Phone.model as phoneModel"
+        "Phone.model as phoneModel",
+        "ServiceOrder.canceled as canceled",
+        "ServiceOrder.beginDate as beginDate",
+        "ServiceOrder.endDate as endDate"
       )
       .join("Client as c", "ServiceOrder.idClient", "c.id")
       .join("Phone", "ServiceOrder.idPhone", "Phone.id")
