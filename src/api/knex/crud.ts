@@ -147,6 +147,17 @@ export interface Crud {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return the average value from a service between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Average value from a service between a period
+   */
+  averageValueFromServicesByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -499,6 +510,30 @@ export const Crud = (): Crud => {
     });
   };
 
+  /**
+   * Return the average value from a service between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Average value from a service between a period
+   */
+  const averageValueFromServicesByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          `SELECT AVG((SELECT COUNT(*) FROM ServiceOrderHasService INNER JOIN ServiceOrder ON ServiceOrderHasService.idServiceOrder = ServiceOrder.id WHERE Service.id = ServiceOrderHasService.idService AND ServiceOrder.beginDate BETWEEN '${beginDate}' AND '${endDate}' AND ServiceOrder.endDate IS NULL)*Service.price) AS Media_Rendimento from Service;`
+        )
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error("could not get average value from service by period");
+        });
+    });
+  };
+
   return {
     findRankServiceByModel,
     findServiceByOrderService,
@@ -515,5 +550,6 @@ export const Crud = (): Crud => {
     totalServiceOrderByPeriod,
     totalServiceOrderByClient,
     totalValueFromServicesByPeriod,
+    averageValueFromServicesByPeriod,
   };
 };

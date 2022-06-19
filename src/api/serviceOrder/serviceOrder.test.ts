@@ -247,4 +247,14 @@ describe("Test the service order database operations", () => {
       },
     ]);
   });
+
+  test("Should return total value from a service between a period", async () => {
+    await database("ServiceOrder").truncate();
+    await database.seed.run();
+    let res = await serviceOrder
+      .getAverageValueFromServicesByPeriod("2022-01-01", "2022-09-25")
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toEqual([{ Media_Rendimento: 28.195999999999998 }]);
+  });
 });
