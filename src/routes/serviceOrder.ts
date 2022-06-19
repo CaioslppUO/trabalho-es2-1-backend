@@ -19,6 +19,7 @@ router.get("/serviceOrder", jsonParser, (req: any, res: any) => {
 
 router.get("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return serviceOrder.findOne(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -29,6 +30,7 @@ router.get("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
 
 router.delete("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return serviceOrder.remove(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -39,8 +41,17 @@ router.delete("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
 
 router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.idClient) return res.status(400).send("Could not idClient");
+    if (!req.body.idPhone) return res.status(400).send("Could not idPhone");
+    if (!req.body.services) return res.status(400).send("Could not services");
+    if (!req.body.beginDate) return res.status(400).send("Could not beginDate");
     return serviceOrder
-      .insert(req.body.idClient, req.body.idPhone, req.body.services)
+      .insert(
+        req.body.idClient,
+        req.body.idPhone,
+        req.body.services,
+        req.body.beginDate
+      )
       .then((data) => {
         return res.status(200).send(data);
       });
@@ -51,8 +62,17 @@ router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
 
 router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.idClient) return res.status(400).send("Could not idClient");
+    if (!req.body.idPhone) return res.status(400).send("Could not idPhone");
+    if (!req.body.services) return res.status(400).send("Could not services");
+    if (!req.body.beginDate) return res.status(400).send("Could not beginDate");
     return serviceOrder
-      .update(req.body.id, req.body.idClient, req.body.idPhone)
+      .update(
+        req.body.id,
+        req.body.idClient,
+        req.body.idPhone,
+        req.body.beginDate
+      )
       .then((data) => {
         return res.status(200).send(data);
       });

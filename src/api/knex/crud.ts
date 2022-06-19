@@ -311,21 +311,24 @@ export const Crud = (): Crud => {
    * @returns All objects from serviceOrder table.
    */
   const findServiceOrder = (): Promise<any> => {
-    return database("ServiceOrder")
-      .select(
-        "c.name",
-        "c.email",
-        "c.cpf",
-        "c.id as idClient",
-        "ServiceOrder.id",
-        "ServiceOrder.idPhone",
-        "Phone.model as phoneModel"
-      )
-      .join("Client as c", "ServiceOrder.idClient", "c.id")
-      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(async (resolve) => {
+      await database("ServiceOrder")
+        .select(
+          "c.name",
+          "c.email",
+          "c.cpf",
+          "c.id as idClient",
+          "ServiceOrder.id",
+          "ServiceOrder.idPhone",
+          "Phone.model as phoneModel"
+        )
+        .join("Client as c", "ServiceOrder.idClient", "c.id")
+        .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+        .then((res) => resolve(res))
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   /**
@@ -333,35 +336,41 @@ export const Crud = (): Crud => {
    * @returns All objects from serviceOrder table.
    */
   const findOneServiceOrder = (id: Number): Promise<any> => {
-    return database("ServiceOrder")
-      .select(
-        "c.name",
-        "c.email",
-        "c.cpf",
-        "c.id as idClient",
-        "ServiceOrder.id",
-        "ServiceOrder.idPhone",
-        "Phone.model as phoneModel",
-        "ServiceOrder.canceled as canceled",
-        "ServiceOrder.beginDate as beginDate",
-        "ServiceOrder.endDate as endDate"
-      )
-      .join("Client as c", "ServiceOrder.idClient", "c.id")
-      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
-      .where({ "ServiceOrder.id": Number(id) })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(async (resolve) => {
+      await database("ServiceOrder")
+        .select(
+          "c.name",
+          "c.email",
+          "c.cpf",
+          "c.id as idClient",
+          "ServiceOrder.id",
+          "ServiceOrder.idPhone",
+          "Phone.model as phoneModel",
+          "ServiceOrder.canceled as canceled",
+          "ServiceOrder.beginDate as beginDate",
+          "ServiceOrder.endDate as endDate"
+        )
+        .join("Client as c", "ServiceOrder.idClient", "c.id")
+        .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+        .where({ "ServiceOrder.id": Number(id) })
+        .then((res) => resolve(res))
+        .catch((Err) => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   const findServiceByOrderService = (id: number): Promise<any> => {
-    return database("ServiceOrderHasService")
-      .select("Service.type", "Service.price", "Service.id")
-      .join("Service", "ServiceOrderHasService.idService", "Service.id")
-      .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(async (resolve) => {
+      await database("ServiceOrderHasService")
+        .select("Service.type", "Service.price", "Service.id")
+        .join("Service", "ServiceOrderHasService.idService", "Service.id")
+        .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
+        .then((res) => resolve(res))
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   return {

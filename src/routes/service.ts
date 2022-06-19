@@ -19,6 +19,7 @@ router.get("/service", jsonParser, (req: any, res: any) => {
 
 router.get("/service=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return service.findOne(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -29,6 +30,7 @@ router.get("/service=:id", jsonParser, (req: any, res: any) => {
 
 router.delete("/service=:id", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.params.id) return res.status(400).send("Could not id");
     return service.remove(req.params.id).then((data) => {
       return res.status(200).send(data);
     });
@@ -39,6 +41,8 @@ router.delete("/service=:id", jsonParser, (req: any, res: any) => {
 
 router.post("/service", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.type) return res.status(400).send("Could not type");
+    if (!req.body.price) return res.status(400).send("Could not price");
     return service.insert(req.body.type, req.body.price).then((data) => {
       return res.status(200).send(data);
     });
@@ -49,6 +53,9 @@ router.post("/service", jsonParser, (req: any, res: any) => {
 
 router.put("/service", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.id) return res.status(400).send("Could not id");
+    if (!req.body.type) return res.status(400).send("Could not type");
+    if (!req.body.price) return res.status(400).send("Could not price");
     return service
       .update(req.body.id, req.body.type, req.body.price)
       .then((data) => {
