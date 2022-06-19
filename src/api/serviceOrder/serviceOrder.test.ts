@@ -267,4 +267,18 @@ describe("Test the service order database operations", () => {
       .catch((err) => err);
     expect(res).toEqual([{ media_servicos: 0.4 }]);
   });
+
+  test("Should return service duration", async () => {
+    await database("ServiceOrder").truncate();
+    await database.seed.run();
+    let res = await serviceOrder
+      .getAverageServiceDuration()
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toEqual([
+      { media: 18, idService: 1 },
+      { media: 38, idService: 3 },
+      { media: 73, idService: 4 },
+    ]);
+  });
 });

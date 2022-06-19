@@ -169,6 +169,12 @@ export interface Crud {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return the average service duration.
+   * @returns Average service duration.
+   */
+  averageServiceDuration: () => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -573,6 +579,27 @@ export const Crud = (): Crud => {
     });
   };
 
+  /**
+   * Return the average service duration.
+   * @returns Average service duration.
+   */
+  const averageServiceDuration = (): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          `SELECT AVG(((JulianDay(ServiceOrder.endDate) - JulianDay(ServiceOrder.beginDate)))) AS media, res.idService FROM ServiceOrder INNER JOIN (SELECT * FROM Service INNER JOIN ServiceOrderHasService ON Service.id = ServiceOrderHasService.idService) AS res ON ServiceOrder.id = res.idServiceOrder WHERE ServiceOrder.endDate IS NOT NULL GROUP BY res.idService;`
+        )
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error(
+            "could not get average quantity from service order by period"
+          );
+        });
+    });
+  };
+
   return {
     findRankServiceByModel,
     findServiceByOrderService,
@@ -591,5 +618,6 @@ export const Crud = (): Crud => {
     totalValueFromServicesByPeriod,
     averageValueFromServicesOrderByPeriod,
     averageServiceOrderQuantityByPeriod,
+    averageServiceDuration,
   };
 };

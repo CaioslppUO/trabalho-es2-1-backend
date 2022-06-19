@@ -111,6 +111,12 @@ export interface ServiceOrder {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return the average service duration.
+   * @returns Average service duration.
+   */
+  getAverageServiceDuration: () => Promise<any[]>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -375,6 +381,23 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  /**
+   * Return the average service duration.
+   * @returns Average service duration.
+   */
+  const getAverageServiceDuration = (): Promise<any[]> => {
+    return new Promise((resolve, rejects) => {
+      crud
+        .averageServiceDuration()
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejects(err);
+        });
+    });
+  };
+
   return {
     insert,
     remove,
@@ -386,5 +409,6 @@ export const ServiceOrder = (): ServiceOrder => {
     getTotalValueFromServicesByPeriod,
     getAverageValueFromServicesOrderByPeriod,
     getAverageServiceOrderQuantityByPeriod,
+    getAverageServiceDuration,
   };
 };
