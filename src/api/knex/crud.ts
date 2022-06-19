@@ -108,7 +108,18 @@ export interface Crud {
    */
   findOneServiceOrder: (id: number) => Promise<any[]>;
 
+  /**
+   * Select and return all objects from service table by OrderService.
+   * @param id Id of the object.
+   * @returns All objects from service table by OrderService.
+   */
   findServiceByOrderService: (id: number) => Promise<any[]>;
+
+  /**
+   * Select and return all objects from service table by OrderService.
+   * @returns All objects from service table order by model.
+   */
+  findRankServiceByModel: () => Promise<any[]>;
 
   /**
    * Return all ServiceOrders between beginDate and endDate.
@@ -338,57 +349,89 @@ export const Crud = (): Crud => {
    * @returns All objects from serviceOrder table.
    */
   const findServiceOrder = (): Promise<any> => {
-    return database("ServiceOrder")
-      .select(
-        "c.name",
-        "c.email",
-        "c.cpf",
-        "c.id as idClient",
-        "ServiceOrder.id",
-        "ServiceOrder.idPhone",
-        "Phone.model as phoneModel"
-      )
-      .join("Client as c", "ServiceOrder.idClient", "c.id")
-      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(async (resolve) => {
+      await database("ServiceOrder")
+        .select(
+          "c.name",
+          "c.email",
+          "c.cpf",
+          "c.id as idClient",
+          "ServiceOrder.id",
+          "ServiceOrder.idPhone",
+          "Phone.model as phoneModel"
+        )
+        .join("Client as c", "ServiceOrder.idClient", "c.id")
+        .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+        .then((res) => resolve(res))
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   /**
-   * Select and return all objects from serviceOrder table.
+   * Select and return one objects from serviceOrder table.
+   * @param id Id of the object.
    * @returns All objects from serviceOrder table.
    */
   const findOneServiceOrder = (id: Number): Promise<any> => {
-    return database("ServiceOrder")
-      .select(
-        "c.name",
-        "c.email",
-        "c.cpf",
-        "c.id as idClient",
-        "ServiceOrder.id",
-        "ServiceOrder.idPhone",
-        "Phone.model as phoneModel",
-        "ServiceOrder.canceled as canceled",
-        "ServiceOrder.beginDate as beginDate",
-        "ServiceOrder.endDate as endDate"
-      )
-      .join("Client as c", "ServiceOrder.idClient", "c.id")
-      .join("Phone", "ServiceOrder.idPhone", "Phone.id")
-      .where({ "ServiceOrder.id": Number(id) })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(async (resolve) => {
+      await database("ServiceOrder")
+        .select(
+          "c.name",
+          "c.email",
+          "c.cpf",
+          "c.id as idClient",
+          "ServiceOrder.id",
+          "ServiceOrder.idPhone",
+          "Phone.model as phoneModel",
+          "ServiceOrder.canceled as canceled",
+          "ServiceOrder.beginDate as beginDate",
+          "ServiceOrder.endDate as endDate"
+        )
+        .join("Client as c", "ServiceOrder.idClient", "c.id")
+        .join("Phone", "ServiceOrder.idPhone", "Phone.id")
+        .where({ "ServiceOrder.id": Number(id) })
+        .then((res) => resolve(res))
+        .catch((Err) => {
+          throw new Error("could not update");
+        });
+    });
   };
 
+  /**
+   * Select and return all objects from service table by OrderService.
+   * @param id Id of the object.
+   * @returns All objects from service table by OrderService.
+   */
   const findServiceByOrderService = (id: number): Promise<any> => {
-    return database("ServiceOrderHasService")
-      .select("Service.type", "Service.price", "Service.id")
-      .join("Service", "ServiceOrderHasService.idService", "Service.id")
-      .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    return new Promise(async (resolve) => {
+      await database("ServiceOrderHasService")
+        .select("Service.type", "Service.price", "Service.id")
+        .join("Service", "ServiceOrderHasService.idService", "Service.id")
+        .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
+        .then((res) => resolve(res))
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
+  };
+
+  /**
+   * Select and return all objects from service table by OrderService.
+   * @returns All objects from service table order by model.
+   */
+  const findRankServiceByModel = (): Promise<any> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          "select *, (select count(*) from ServiceOrder where service.id = serviceorder.idClient) as OS from Service order by os desc limit 5;"
+        )
+        .then((res) => resolve(res))
+        .catch(() => {
+          throw new Error("could not update");
+        });
+    });
   };
 
   /**
@@ -457,6 +500,7 @@ export const Crud = (): Crud => {
   };
 
   return {
+    findRankServiceByModel,
     findServiceByOrderService,
     findOneServiceOrder,
     findServiceOrder,
