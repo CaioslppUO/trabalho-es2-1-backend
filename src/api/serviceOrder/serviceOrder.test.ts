@@ -155,4 +155,32 @@ describe("Test the service order database operations", () => {
       .catch((err) => err);
     expect(res).toBe("phone doesn't exist");
   });
+
+  test("Should return all Service Orders between date", async () => {
+    await database("ServiceOrder").truncate();
+    await database.seed.run();
+    let res = await serviceOrder
+      .getTotalServiceOrderByPeriod("2022-01-01", "2022-06-25")
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).not.toBe(undefined);
+    expect(res.length).not.toBe(undefined);
+    expect(res.length).toBe(2);
+    expect(res[0]).toEqual({
+      id: 3,
+      idClient: 3,
+      idPhone: 4,
+      canceled: 0,
+      beginDate: "2022-05-18",
+      endDate: "2022-06-25",
+    });
+    expect(res[1]).toEqual({
+      id: 5,
+      idClient: 1,
+      idPhone: 5,
+      canceled: 0,
+      beginDate: "2022-02-01",
+      endDate: "2022-04-15",
+    });
+  });
 });

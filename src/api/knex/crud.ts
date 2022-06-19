@@ -109,6 +109,16 @@ export interface Crud {
   findOneServiceOrder: (id: number) => Promise<any[]>;
 
   findServiceByOrderService: (id: number) => Promise<any[]>;
+
+  /**
+   * Return all ServiceOrders between beginDate and endDate.
+   * @param beginDate First Date.
+   * @param endDate Last Date.
+   */
+  totalServiceOrderByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -364,6 +374,28 @@ export const Crud = (): Crud => {
       });
   };
 
+  /**
+   * Return all ServiceOrders between beginDate and endDate.
+   * @param beginDate First Date.
+   * @param endDate Last Date.
+   */
+  const totalServiceOrderByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database("ServiceOrder")
+        .where("beginDate", ">=", beginDate)
+        .andWhere("endDate", "<=", endDate)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error("could not get total service orders by period");
+        });
+    });
+  };
+
   return {
     findServiceByOrderService,
     findOneServiceOrder,
@@ -376,5 +408,6 @@ export const Crud = (): Crud => {
     findOneNoPrimary,
     update,
     updateNoPrimary,
+    totalServiceOrderByPeriod,
   };
 };

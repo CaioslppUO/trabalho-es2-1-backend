@@ -61,6 +61,17 @@ export interface ServiceOrder {
     idPhone: number,
     beginDate: string
   ) => Promise<boolean>;
+
+  /**
+   * Return all ServiceOrders between beginDate and endDate.
+   * @param beginDate First Date.
+   * @param endDate Last Date.
+   * @returns ServiceOrders between beginDate and endDate
+   */
+  getTotalServiceOrderByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -220,11 +231,34 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  /**
+   * Return all ServiceOrders between beginDate and endDate.
+   * @param beginDate First Date.
+   * @param endDate Last Date.
+   * @returns ServiceOrders between beginDate and endDate
+   */
+  const getTotalServiceOrderByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise((resolve, rejects) => {
+      crud
+        .totalServiceOrderByPeriod(beginDate, endDate)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejects(err);
+        });
+    });
+  };
+
   return {
     insert,
     remove,
     find,
     findOne,
     update,
+    getTotalServiceOrderByPeriod,
   };
 };
