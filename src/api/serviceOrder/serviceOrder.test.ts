@@ -183,4 +183,20 @@ describe("Test the service order database operations", () => {
       endDate: "2022-04-15",
     });
   });
+
+  test("Should return all Service Orders by client", async () => {
+    await database("ServiceOrder").truncate();
+    await database.seed.run();
+    let res = await serviceOrder
+      .getTotalServiceOrderByClient()
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toEqual([
+      { Nome: "Caio Cezar das Neves Moreira", OS: 2 },
+      { Nome: "Lucas Garavaglia", OS: 1 },
+      { Nome: "Leví Cícero Arcanjo", OS: 1 },
+      { Nome: "Guilherme Bachega Gomes", OS: 1 },
+      { Nome: "Milena Santos", OS: 0 },
+    ]);
+  });
 });

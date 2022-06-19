@@ -119,6 +119,12 @@ export interface Crud {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return all ServiceOrders by client.
+   * @returns ServiceOrders.
+   */
+  totalServiceOrderByClient: () => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -396,6 +402,25 @@ export const Crud = (): Crud => {
     });
   };
 
+  /**
+   * Return all ServiceOrders by client.
+   * @returns ServiceOrders.
+   */
+  const totalServiceOrderByClient = (): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          "SELECT Client.name AS Nome, (SELECT COUNT(*) FROM ServiceOrder WHERE Client.id = ServiceOrder.idClient) AS OS FROM Client"
+        )
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error("could not get total service orders by client");
+        });
+    });
+  };
+
   return {
     findServiceByOrderService,
     findOneServiceOrder,
@@ -409,5 +434,6 @@ export const Crud = (): Crud => {
     update,
     updateNoPrimary,
     totalServiceOrderByPeriod,
+    totalServiceOrderByClient,
   };
 };

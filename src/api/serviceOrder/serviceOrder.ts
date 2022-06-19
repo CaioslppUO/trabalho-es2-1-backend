@@ -72,6 +72,12 @@ export interface ServiceOrder {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return all ServiceOrders by client.
+   * @returns ServiceOrders.
+   */
+  getTotalServiceOrderByClient: () => Promise<any[]>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -253,6 +259,23 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  /**
+   * Return all ServiceOrders by client.
+   * @returns ServiceOrders.
+   */
+  const getTotalServiceOrderByClient = (): Promise<any[]> => {
+    return new Promise((resolve, rejects) => {
+      crud
+        .totalServiceOrderByClient()
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejects(err);
+        });
+    });
+  };
+
   return {
     insert,
     remove,
@@ -260,5 +283,6 @@ export const ServiceOrder = (): ServiceOrder => {
     findOne,
     update,
     getTotalServiceOrderByPeriod,
+    getTotalServiceOrderByClient,
   };
 };
