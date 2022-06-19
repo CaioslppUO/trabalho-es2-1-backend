@@ -28,6 +28,16 @@ router.get("/service=:id", jsonParser, (req: any, res: any) => {
   }
 });
 
+router.get("/rankServiceByModel", jsonParser, (req: any, res: any) => {
+  try {
+    return service.findRankServiceByModel().then((data) => {
+      return res.status(200).send(data);
+    });
+  } catch (error) {
+    return res.status(400).send({ error });
+  }
+});
+
 router.delete("/service=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");

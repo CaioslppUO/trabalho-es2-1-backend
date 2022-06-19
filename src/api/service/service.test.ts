@@ -66,6 +66,22 @@ describe("Test the service database operations", () => {
     });
   });
 
+  test("Should select on service order by model phone", async () => {
+    await database("Service").truncate();
+    await database.seed.run();
+    let res = await service
+      .findRankServiceByModel()
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toEqual([
+      { id: 1, type: "Colocar Película", price: 33.5, deleted: 0, OS: 2 },
+      { id: 2, type: "Troca de Tela", price: 120.99, deleted: 0, OS: 1 },
+      { id: 3, type: "Trocar Bateria", price: 34.99, deleted: 0, OS: 1 },
+      { id: 4, type: "Limpeza", price: 19.99, deleted: 0, OS: 1 },
+      { id: 5, type: "Remover Vírus", price: 29.99, deleted: 0, OS: 0 },
+    ]);
+  });
+
   test("Should select all services", async () => {
     await database("Service").truncate();
     await database.seed.run();
