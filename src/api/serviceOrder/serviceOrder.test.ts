@@ -1,6 +1,8 @@
 import { ServiceOrder } from "./serviceOrder";
 import { database } from "../knex/knex";
 describe("Test the service order database operations", () => {
+  jest.setTimeout(30000);
+
   afterAll(async () => {
     await database("Client").truncate();
     await database.seed.run();
@@ -197,6 +199,52 @@ describe("Test the service order database operations", () => {
       { Nome: "Leví Cícero Arcanjo", OS: 1 },
       { Nome: "Guilherme Bachega Gomes", OS: 1 },
       { Nome: "Milena Santos", OS: 0 },
+    ]);
+  });
+
+  test("Should return total value from a service between a period", async () => {
+    await database("ServiceOrder").truncate();
+    await database.seed.run();
+    let res = await serviceOrder
+      .getTotalValueFromServicesByPeriod("2022-01-01", "2022-09-25")
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toEqual([
+      {
+        id: 1,
+        type: "Colocar Película",
+        price: 33.5,
+        deleted: 0,
+        Rendimento: 33.5,
+      },
+      {
+        id: 2,
+        type: "Troca de Tela",
+        price: 120.99,
+        deleted: 0,
+        Rendimento: 0,
+      },
+      {
+        id: 3,
+        type: "Trocar Bateria",
+        price: 34.99,
+        deleted: 0,
+        Rendimento: 34.99,
+      },
+      {
+        id: 4,
+        type: "Limpeza",
+        price: 19.99,
+        deleted: 0,
+        Rendimento: 19.99,
+      },
+      {
+        id: 5,
+        type: "Remover Vírus",
+        price: 29.99,
+        deleted: 0,
+        Rendimento: 0,
+      },
     ]);
   });
 });

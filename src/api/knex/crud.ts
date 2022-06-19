@@ -125,6 +125,17 @@ export interface Crud {
    * @returns ServiceOrders.
    */
   totalServiceOrderByClient: () => Promise<any[]>;
+
+  /**
+   * Return the total value from a service between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Total value from a service between a period
+   */
+  totalValueFromServicesByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -421,6 +432,30 @@ export const Crud = (): Crud => {
     });
   };
 
+  /**
+   * Return the total value from a service between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Total value from a service between a period
+   */
+  const totalValueFromServicesByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          `SELECT *, (SELECT COUNT(*) FROM ServiceOrderHasService INNER JOIN ServiceOrder ON ServiceOrderHasService.idServiceOrder = ServiceOrder.id WHERE Service.id = ServiceOrderHasService.idService AND ServiceOrder.beginDate BETWEEN '${beginDate}' AND '${endDate}' AND ServiceOrder.endDate IS NOT NULL)*Service.price AS Rendimento from Service;`
+        )
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error("could not get total value from service by period");
+        });
+    });
+  };
+
   return {
     findServiceByOrderService,
     findOneServiceOrder,
@@ -435,5 +470,6 @@ export const Crud = (): Crud => {
     updateNoPrimary,
     totalServiceOrderByPeriod,
     totalServiceOrderByClient,
+    totalValueFromServicesByPeriod,
   };
 };

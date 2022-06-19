@@ -10,6 +10,6 @@ export async function seed(knex: Knex): Promise<void> {
     { idServiceOrder: 2, idService: 2 },
     { idServiceOrder: 3, idService: 3 },
     { idServiceOrder: 4, idService: 4 },
-    { idServiceOrder: 5, idService: 5 },
+    { idServiceOrder: 5, idService: 4 },
   ]);
 }

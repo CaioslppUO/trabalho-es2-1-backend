@@ -78,6 +78,17 @@ export interface ServiceOrder {
    * @returns ServiceOrders.
    */
   getTotalServiceOrderByClient: () => Promise<any[]>;
+
+  /**
+   * Return the total value from a service between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Total value from a service between a period
+   */
+  getTotalValueFromServicesByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -276,6 +287,28 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  /**
+   * Return the total value from a service between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Total value from a service between a period
+   */
+  const getTotalValueFromServicesByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise((resolve, rejects) => {
+      crud
+        .totalValueFromServicesByPeriod(beginDate, endDate)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejects(err);
+        });
+    });
+  };
+
   return {
     insert,
     remove,
@@ -284,5 +317,6 @@ export const ServiceOrder = (): ServiceOrder => {
     update,
     getTotalServiceOrderByPeriod,
     getTotalServiceOrderByClient,
+    getTotalValueFromServicesByPeriod,
   };
 };
