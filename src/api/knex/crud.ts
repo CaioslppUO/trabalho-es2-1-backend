@@ -154,7 +154,7 @@ export interface Crud {
    * @param endDate Second date.
    * @returns Average value from a service between a period
    */
-  averageValueFromServicesByPeriod: (
+  averageValueFromServicesOrderByPeriod: (
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
@@ -516,7 +516,7 @@ export const Crud = (): Crud => {
    * @param endDate Second date.
    * @returns Average value from a service between a period
    */
-  const averageValueFromServicesByPeriod = (
+  const averageValueFromServicesOrderByPeriod = (
     beginDate: string,
     endDate: string
   ): Promise<any[]> => {
@@ -550,6 +550,6 @@ export const Crud = (): Crud => {
     totalServiceOrderByPeriod,
     totalServiceOrderByClient,
     totalValueFromServicesByPeriod,
-    averageValueFromServicesByPeriod,
+    averageValueFromServicesOrderByPeriod,
   };
 };

@@ -96,7 +96,7 @@ export interface ServiceOrder {
    * @param endDate Second date.
    * @returns Average value from a service between a period
    */
-  getAverageValueFromServicesByPeriod: (
+  getAverageValueFromServicesOrderByPeriod: (
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
@@ -326,13 +326,13 @@ export const ServiceOrder = (): ServiceOrder => {
    * @param endDate Second date.
    * @returns Average value from a service between a period
    */
-  const getAverageValueFromServicesByPeriod = (
+  const getAverageValueFromServicesOrderByPeriod = (
     beginDate: string,
     endDate: string
   ): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
       crud
-        .averageValueFromServicesByPeriod(beginDate, endDate)
+        .averageValueFromServicesOrderByPeriod(beginDate, endDate)
         .then((res) => {
           resolve(res);
         })
@@ -351,6 +351,6 @@ export const ServiceOrder = (): ServiceOrder => {
     getTotalServiceOrderByPeriod,
     getTotalServiceOrderByClient,
     getTotalValueFromServicesByPeriod,
-    getAverageValueFromServicesByPeriod,
+    getAverageValueFromServicesOrderByPeriod,
   };
 };
