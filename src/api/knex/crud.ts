@@ -126,6 +126,7 @@ export const Crud = (): Crud => {
       await database(table)
         .insert(content)
         .then((res) => {
+          console.log("ufasbiufbsdiubfosdi");
           resolve({ id: res[0] });
         })
         .catch(() => {
@@ -316,6 +317,7 @@ export const Crud = (): Crud => {
         "c.name",
         "c.email",
         "c.cpf",
+        "c.id as idClient",
         "ServiceOrder.id",
         "ServiceOrder.idPhone",
         "Phone.model as phoneModel"
@@ -337,6 +339,7 @@ export const Crud = (): Crud => {
         "c.name",
         "c.email",
         "c.cpf",
+        "c.id as idClient",
         "ServiceOrder.id",
         "ServiceOrder.idPhone",
         "Phone.model as phoneModel"
@@ -351,7 +354,7 @@ export const Crud = (): Crud => {
 
   const findServiceByOrderService = (id: number): Promise<any> => {
     return database("ServiceOrderHasService")
-      .select("Service.type", "Service.price")
+      .select("Service.type", "Service.price", "Service.id")
       .join("Service", "ServiceOrderHasService.idService", "Service.id")
       .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
       .catch((err) => {

@@ -17,7 +17,11 @@ export interface ServiceOrder {
    * @param idPhone Id of the Phone.
    * @returns The id of the inserted ServiceOrder.
    */
-  insert: (idClient: number, idPhone: number) => Promise<{ id: number }>;
+  insert: (
+    idClient: number,
+    idPhone: number,
+    services: Array<Number>
+  ) => Promise<{ id: number }>;
 
   /**
    * Remove a ServiceOrder from the database.
@@ -60,7 +64,8 @@ export const ServiceOrder = (): ServiceOrder => {
    */
   const insert = (
     idClient: number,
-    idPhone: number
+    idPhone: number,
+    services: Array<Number>
   ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
       let phone = Phone();
@@ -79,8 +84,20 @@ export const ServiceOrder = (): ServiceOrder => {
                   };
                   crud
                     .insert("ServiceOrder", new_ServiceOrder)
-                    .then((res) => {
-                      resolve(res);
+                    .then((res3) => {
+                      for (let i = 0; i < services.length; i++) {
+                        console.log("aaaaaaaaaaaaaaaaaaaa");
+                        crud
+                          .insert("serviceOrderHasService", {
+                            idServiceOrder: Number(res3),
+                            idService: services[i],
+                          })
+                          .catch((err) => {
+                            console.log("CU");
+                            rejects(err);
+                          });
+                      }
+                      resolve(res3);
                     })
                     .catch((err) => {
                       rejects(err);
