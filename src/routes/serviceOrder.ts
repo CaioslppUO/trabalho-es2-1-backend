@@ -62,9 +62,9 @@ router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
 
 router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
+    if (!req.body.id) return res.status(400).send("Could not id");
     if (!req.body.idClient) return res.status(400).send("Could not idClient");
     if (!req.body.idPhone) return res.status(400).send("Could not idPhone");
-    if (!req.body.services) return res.status(400).send("Could not services");
     if (!req.body.beginDate) return res.status(400).send("Could not beginDate");
     return serviceOrder
       .update(
