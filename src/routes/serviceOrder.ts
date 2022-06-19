@@ -40,7 +40,7 @@ router.delete("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
 router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
     return serviceOrder
-      .insert(req.body.idClient, req.body.idPhone)
+      .insert(req.body.idClient, req.body.idPhone, req.body.services)
       .then((data) => {
         return res.status(200).send(data);
       });

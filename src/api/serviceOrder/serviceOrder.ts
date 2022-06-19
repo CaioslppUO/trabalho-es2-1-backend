@@ -1,6 +1,7 @@
 import { Crud } from "../knex/crud";
 import { Phone } from "../phone/phone";
 import { Client } from "../client/client";
+import { resolve } from "path";
 
 /**
  * Database ServiceOrder interface.
@@ -17,7 +18,11 @@ export interface ServiceOrder {
    * @param idPhone Id of the Phone.
    * @returns The id of the inserted ServiceOrder.
    */
-  insert: (idClient: number, idPhone: number) => Promise<{ id: number }>;
+  insert: (
+    idClient: number,
+    idPhone: number,
+    services: Array<Number>
+  ) => Promise<{ id: number }>;
 
   /**
    * Remove a ServiceOrder from the database.
@@ -58,47 +63,33 @@ export const ServiceOrder = (): ServiceOrder => {
    * @param idPhone Id of the Phone.
    * @returns The id of the inserted ServiceOrder.
    */
-  const insert = (
+  const insert = async (
     idClient: number,
-    idPhone: number
+    idPhone: number,
+    services: Array<Number>
   ): Promise<{ id: number }> => {
-    return new Promise((resolve, rejects) => {
+    return new Promise(async (resolve, rejects) => {
       let phone = Phone();
-      phone
-        .findOne(idPhone)
-        .then((res) => {
-          if (res.length > 0) {
-            let client = Client();
-            client
-              .findOne(idClient)
-              .then((res2) => {
-                if (res2.length > 0) {
-                  let new_ServiceOrder: ServiceOrderObject = {
-                    idClient,
-                    idPhone,
-                  };
-                  crud
-                    .insert("ServiceOrder", new_ServiceOrder)
-                    .then((res) => {
-                      resolve(res);
-                    })
-                    .catch((err) => {
-                      rejects(err);
-                    });
-                } else {
-                  rejects("client doesn't exist");
-                }
-              })
-              .catch((err) => {
-                rejects(err);
-              });
-          } else {
-            rejects("phone doesn't exist");
-          }
-        })
-        .catch((err) => {
-          rejects(err);
-        });
+      const p = await phone.findOne(idPhone);
+      if (p.length <= 0) rejects("phone doesn't exist");
+      let client = Client();
+      let c = await client.findOne(idClient);
+      if (c.length <= 0) rejects("client doesn't exist");
+      let { id } = await crud.insert("ServiceOrder", {
+        idClient,
+        idPhone,
+      });
+      try {
+        for (let i = 0; i < services.length; i++) {
+          await crud.insert("serviceOrderHasService", {
+            idServiceOrder: Number(id),
+            idService: services[i],
+          });
+        }
+      } catch (error) {
+        rejects(error);
+      }
+      resolve({ id: id });
     });
   };
 
