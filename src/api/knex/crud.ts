@@ -126,7 +126,6 @@ export const Crud = (): Crud => {
       await database(table)
         .insert(content)
         .then((res) => {
-          console.log("ufasbiufbsdiubfosdi");
           resolve({ id: res[0] });
         })
         .catch(() => {
