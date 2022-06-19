@@ -115,7 +115,27 @@ export interface Crud {
    */
   findServiceByOrderService: (id: number) => Promise<any[]>;
 
+  /**
+   * Select and return all objects from service table by OrderService.
+   * @returns All objects from service table order by model.
+   */
   findRankServiceByModel: () => Promise<any[]>;
+
+  /**
+   * Return all ServiceOrders between beginDate and endDate.
+   * @param beginDate First Date.
+   * @param endDate Last Date.
+   */
+  totalServiceOrderByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
+
+  /**
+   * Return all ServiceOrders by client.
+   * @returns ServiceOrders.
+   */
+  totalServiceOrderByClient: () => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -403,6 +423,47 @@ export const Crud = (): Crud => {
     });
   };
 
+  /**
+   * Return all ServiceOrders between beginDate and endDate.
+   * @param beginDate First Date.
+   * @param endDate Last Date.
+   */
+  const totalServiceOrderByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database("ServiceOrder")
+        .where("beginDate", ">=", beginDate)
+        .andWhere("endDate", "<=", endDate)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error("could not get total service orders by period");
+        });
+    });
+  };
+
+  /**
+   * Return all ServiceOrders by client.
+   * @returns ServiceOrders.
+   */
+  const totalServiceOrderByClient = (): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          "SELECT Client.name AS Nome, (SELECT COUNT(*) FROM ServiceOrder WHERE Client.id = ServiceOrder.idClient) AS OS FROM Client"
+        )
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error("could not get total service orders by client");
+        });
+    });
+  };
+
   return {
     findRankServiceByModel,
     findServiceByOrderService,
@@ -416,5 +477,7 @@ export const Crud = (): Crud => {
     findOneNoPrimary,
     update,
     updateNoPrimary,
+    totalServiceOrderByPeriod,
+    totalServiceOrderByClient,
   };
 };
