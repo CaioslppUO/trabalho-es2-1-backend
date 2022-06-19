@@ -100,6 +100,17 @@ export interface ServiceOrder {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return the average quantity from a service order between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Average quantity from a service order between a period
+   */
+  getAverageServiceOrderQuantityByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -342,6 +353,28 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  /**
+   * Return the average quantity from a service order between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Average quantity from a service order between a period
+   */
+  const getAverageServiceOrderQuantityByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise((resolve, rejects) => {
+      crud
+        .averageServiceOrderQuantityByPeriod(beginDate, endDate)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejects(err);
+        });
+    });
+  };
+
   return {
     insert,
     remove,
@@ -352,5 +385,6 @@ export const ServiceOrder = (): ServiceOrder => {
     getTotalServiceOrderByClient,
     getTotalValueFromServicesByPeriod,
     getAverageValueFromServicesOrderByPeriod,
+    getAverageServiceOrderQuantityByPeriod,
   };
 };

@@ -248,7 +248,7 @@ describe("Test the service order database operations", () => {
     ]);
   });
 
-  test("Should return average value from a service between a period", async () => {
+  test("Should return average value from all service orders between a period", async () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
     let res = await serviceOrder
@@ -256,5 +256,15 @@ describe("Test the service order database operations", () => {
       .then((res) => res)
       .catch((err) => err);
     expect(res).toEqual([{ Media_Rendimento: 28.195999999999998 }]);
+  });
+
+  test("Should return average quantity from all service orders between a period", async () => {
+    await database("ServiceOrder").truncate();
+    await database.seed.run();
+    let res = await serviceOrder
+      .getAverageServiceOrderQuantityByPeriod("2022-01-01", "2022-12-31")
+      .then((res) => res)
+      .catch((err) => err);
+    expect(res).toEqual([{ media_servicos: 0.4 }]);
   });
 });

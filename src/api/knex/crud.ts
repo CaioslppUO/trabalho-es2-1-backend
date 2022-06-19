@@ -158,6 +158,17 @@ export interface Crud {
     beginDate: string,
     endDate: string
   ) => Promise<any[]>;
+
+  /**
+   * Return the average quantity from a service order between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Average quantity from a service order between a period
+   */
+  averageServiceOrderQuantityByPeriod: (
+    beginDate: string,
+    endDate: string
+  ) => Promise<any[]>;
 }
 
 export const Crud = (): Crud => {
@@ -511,10 +522,10 @@ export const Crud = (): Crud => {
   };
 
   /**
-   * Return the average value from a service between a period.
+   * Return the average value from all service orders between a period.
    * @param beginDate First date.
    * @param endDate Second date.
-   * @returns Average value from a service between a period
+   * @returns Average value from all service orders between a period
    */
   const averageValueFromServicesOrderByPeriod = (
     beginDate: string,
@@ -529,7 +540,35 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch((err) => {
-          throw new Error("could not get average value from service by period");
+          throw new Error(
+            "could not get average value from service order by period"
+          );
+        });
+    });
+  };
+
+  /**
+   * Return the average quantity from a service order between a period.
+   * @param beginDate First date.
+   * @param endDate Second date.
+   * @returns Average quantity from a service order between a period
+   */
+  const averageServiceOrderQuantityByPeriod = (
+    beginDate: string,
+    endDate: string
+  ): Promise<any[]> => {
+    return new Promise(async (resolve) => {
+      await database
+        .raw(
+          `SELECT SUM((SELECT COUNT(*) FROM ServiceOrderHasService INNER JOIN ServiceOrder ON ServiceOrderHasService.idServiceOrder = ServiceOrder.id WHERE Service.id = ServiceOrderHasService.idService AND ServiceOrder.beginDate BETWEEN '${beginDate}' AND '${endDate}' AND ServiceOrder.endDate IS NULL)) * 1.0 / (select count(*) from ServiceOrder where beginDate between '${beginDate}' AND '${endDate}') AS media_servicos from Service;`
+        )
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          throw new Error(
+            "could not get average quantity from service order by period"
+          );
         });
     });
   };
@@ -551,5 +590,6 @@ export const Crud = (): Crud => {
     totalServiceOrderByClient,
     totalValueFromServicesByPeriod,
     averageValueFromServicesOrderByPeriod,
+    averageServiceOrderQuantityByPeriod,
   };
 };
