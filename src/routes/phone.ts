@@ -61,13 +61,3 @@ router.put("/phone", jsonParser, (req: any, res: any) => {
     return res.status(400).send({ error });
   }
 });
-
-router.get("/phoneModelsRank", jsonParser, (req: any, res: any) => {
-  try {
-    return phone.findModelsRank().then((data) => {
-      return res.status(200).send(data);
-    });
-  } catch (error) {
-    return res.status(400).send({ error });
-  }
-});
