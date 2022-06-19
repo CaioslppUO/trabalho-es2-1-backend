@@ -73,8 +73,9 @@ describe("Test the service order database operations", () => {
       name: "Lucas Garavaglia",
       id: 2,
       idPhone: 2,
+      idClient: 2,
       phoneModel: "Motorola",
-      services: [{ price: 120.99, type: "Troca de Tela" }],
+      services: [{ id: 2, price: 120.99, type: "Troca de Tela" }],
     });
   });
 
@@ -110,8 +111,9 @@ describe("Test the service order database operations", () => {
       name: "Leví Cícero Arcanjo",
       id: 2,
       idPhone: 4,
+      idClient: 3,
       phoneModel: "Apple",
-      services: [{ type: "Troca de Tela", price: 120.99 }],
+      services: [{ id: 2, type: "Troca de Tela", price: 120.99 }],
     });
   });
 
