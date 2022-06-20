@@ -192,24 +192,16 @@ export const ServiceOrder = (): ServiceOrder => {
    * @returns ServiceOrders in the database.
    */
   const find = (): Promise<any[]> => {
-    return new Promise((resolve, rejects) => {
+    return new Promise(async (resolve, rejects) => {
       try {
-        crud
-          .findServiceOrder()
-          .then((res: any) => {
-            crud
-              .findServiceByOrderService(res[0].id)
-              .then((data) => {
-                res[0].services = data;
-                resolve(res);
-              })
-              .catch((err) => {
-                rejects(err);
-              });
-          })
-          .catch((err) => {
-            rejects(err);
-          });
+        let serviceOrders = await crud.findServiceOrder();
+        let services;
+        for (let i = 0; i < serviceOrders.length; i++) {
+          services = await crud.findServiceByOrderService(serviceOrders[i].id);
+          if (services.length > 0) serviceOrders[i].services = services;
+          else serviceOrders[i].services = [];
+        }
+        resolve(serviceOrders);
       } catch (error) {
         rejects(error);
       }
