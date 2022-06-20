@@ -2,6 +2,8 @@ import { ServiceOrderHasService } from "./serviceOrderHasService";
 import { database } from "../knex/knex";
 
 describe("Test the service order has service database operations", () => {
+  jest.setTimeout(100000);
+
   afterAll(async () => {
     await database("Client").truncate();
     await database.seed.run();

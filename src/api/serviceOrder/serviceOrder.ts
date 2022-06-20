@@ -2,6 +2,7 @@ import { Crud } from "../knex/crud";
 import { Phone } from "../phone/phone";
 import { Client } from "../client/client";
 import { resolve } from "path";
+import { Service } from "../service/service";
 
 /**
  * Database ServiceOrder interface.
@@ -142,6 +143,14 @@ export const ServiceOrder = (): ServiceOrder => {
       let client = Client();
       let c = await client.findOne(idClient);
       if (c.length <= 0) rejects("client doesn't exist");
+      let s = await Service().find();
+      let mustHave = services;
+      for (let i = 0; i < s.length; i++) {
+        if (mustHave.includes(s[i].id)) {
+          console.log(mustHave.splice(mustHave.indexOf(s[i].id), 1));
+        }
+      }
+      if (mustHave.length != 0) rejects("could not insert, invalid service");
       let { id } = await crud.insert("ServiceOrder", {
         idClient,
         idPhone,

@@ -2,6 +2,8 @@ import { Phone } from "./phone";
 import { database } from "../knex/knex";
 
 describe("Test the phone database operations", () => {
+  jest.setTimeout(100000);
+
   afterAll(async () => {
     await database("Phone").truncate();
     await database.seed.run();

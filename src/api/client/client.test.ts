@@ -2,6 +2,8 @@ import { Client } from "./client";
 import { database } from "../knex/knex";
 
 describe("Test the client database operations", () => {
+  jest.setTimeout(100000);
+
   afterAll(async () => {
     await database("Client").truncate();
     await database.seed.run();
