@@ -285,7 +285,7 @@ describe("Test the service order database operations", () => {
   test("Should not insert a service order with invalid service", async () => {
     await database("ServiceOrder").truncate();
     await database.seed.run();
-    let res = serviceOrder
+    let res = await serviceOrder
       .insert(1, 1, [10, 11, 12], "2022-12-25")
       .then(() => {})
       .catch((err) => err);
