@@ -6,14 +6,20 @@ export interface Crud {
    * Insert in table an object.
    * @param table Table to insert.
    * @param content Object to insert.
+   * @param forceRollBack Force the inserted object to suffer rollback.
    * @returns The id of the inserted object.
    */
-  insert: <Type>(table: string, content: Type) => Promise<{ id: number }>;
+  insert: <Type>(
+    table: string,
+    content: Type,
+    forceRollBack?: boolean
+  ) => Promise<{ id: number }>;
 
   /**
    * Remove an object from a table.
    * @param table Table to remove from.
    * @param id Id of the object to remove.
+   * @param forceRollBack Force the removed object to suffer rollback.
    * @returns Query result.
    */
   remove: (table: string, id: number) => Promise<number>;
@@ -25,6 +31,7 @@ export interface Crud {
    * @param id_2 Id of the second field of the object.
    * @param field_1 First field to compare of the object.
    * @param field_2 Second field to compare of the object.
+   * @param forceRollBack Force the removed object to suffer rollback.
    * @returns Query result.
    */
   removeNoPrimary: (
@@ -72,6 +79,7 @@ export interface Crud {
    * @param table Table to update object.
    * @param id Id of the object.
    * @param content Content to update the object.
+   * @param forceRollBack Force the updated object to suffer rollback.
    * @returns Query result.
    */
   update: <Type>(table: string, id: number, content: Type) => Promise<number>;
@@ -84,6 +92,7 @@ export interface Crud {
    * @param field_1 First field to compare of the object.
    * @param field_2 First field to compare of the object.
    * @param content Content to update the object.
+   * @param forceRollBack Force the updated object to suffer rollback.
    * @returns Query result.
    */
   updateNoPrimary: <Type>(
@@ -178,123 +187,103 @@ export interface Crud {
 }
 
 export const Crud = (): Crud => {
-  /**
-   * Insert in table an object.
-   * @param table Table to insert.
-   * @param content Object to insert.
-   * @returns The id of the inserted object.
-   */
   const insert = <Type>(
     table: string,
-    content: Type
+    content: Type,
+    forceRollBack: boolean = false
   ): Promise<{ id: number }> => {
     return new Promise(async (resolve, rejects) => {
-      await database(table)
-        .insert(content)
-        .then((res) => {
-          resolve({ id: res[0] });
-        })
-        .catch(() => {
-          rejects("could not insert");
-        });
+      await database.transaction((t) => {
+        t(table)
+          .insert(content)
+          .then((res) => {
+            if (forceRollBack) t.rollback();
+            else t.commit();
+            resolve({ id: res[0] });
+          })
+          .catch(() => {
+            t.rollback();
+            rejects("could not insert");
+          });
+      });
     });
   };
 
-  /**
-   * Remove an object from a table.
-   * @param table Table to remove from.
-   * @param id Id of the object to remove.
-   * @returns Query result.
-   */
-  const remove = (table: string, id: number): Promise<number> => {
-    return new Promise(async (resolve) => {
-      await database(table)
-        .where("id", Number(id))
-        .del()
-        .then((res) => {
-          resolve(res);
-        })
-        .catch(() => {
-          throw new Error("could not remove");
-        });
+  const remove = (
+    table: string,
+    id: number,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
+    return new Promise(async (resolve, rejects) => {
+      await database.transaction((t) => {
+        t(table)
+          .where("id", Number(id))
+          .del()
+          .then((res) => {
+            if (forceRollBack) t.rollback();
+            else t.commit();
+            resolve(res);
+          })
+          .catch(() => {
+            t.rollback();
+            rejects("could not remove");
+          });
+      });
     });
   };
 
-  /**
-   * Remove an object from a table.
-   * @param table Table to get the object from.
-   * @param id_1 Id of the first field of the object.
-   * @param id_2 Id of the second field of the object.
-   * @param field_1 First field to compare of the object.
-   * @param field_2 Second field to compare of the object.
-   * @returns Query result.
-   */
   const removeNoPrimary = (
     table: string,
     id_1: number,
     id_2: number,
     field_1: string,
-    field_2: string
+    field_2: string,
+    forceRollBack: boolean = false
   ): Promise<number> => {
-    return new Promise(async (resolve) => {
-      await database(table)
-        .where(`${field_1}`, Number(id_1))
-        .andWhere(`${field_2}`, Number(id_2))
-        .del()
-        .then((res) => {
-          resolve(res);
-        })
-        .catch(() => {
-          throw new Error("could not remove");
-        });
+    return new Promise(async (resolve, rejects) => {
+      await database.transaction((t) => {
+        t(table)
+          .where(`${field_1}`, Number(id_1))
+          .andWhere(`${field_2}`, Number(id_2))
+          .del()
+          .then((res) => {
+            if (forceRollBack) t.rollback();
+            else t.commit();
+            resolve(res);
+          })
+          .catch(() => {
+            t.rollback();
+            rejects("could not remove");
+          });
+      });
     });
   };
 
-  /**
-   * Select and return all objects from a table.
-   * @param table Table to select objects.
-   * @returns All objects from a table.
-   */
   const find = (table: string): Promise<any> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       resolve(
         await database(table)
           .then((res) => res)
           .catch((err) => {
-            throw new Error("could not find");
+            rejects("could not find");
           })
       );
     });
   };
 
-  /**
-   * Return on object from a table.
-   * @param table Table to get the object from.
-   * @param id Id of the object.
-   * @returns Object.
-   */
   const findOne = (table: string, id: number): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database(table)
         .where({ id: Number(id) })
         .then((res) => {
           resolve(res);
         })
         .catch(() => {
-          throw new Error("could not find one");
+          rejects("could not find one");
         });
     });
   };
 
-  /**
-   * Return on object from a table that has no primary id.
-   * @param table Table to get the object from.
-   * @param id_1 Id of the first field of the object.
-   * @param id_2 Id of the second field of the object.
-   * @param field_1 First field to compare of the object.
-   * @param field_2 Second field to compare of the object.
-   * @returns Object.
-   */
   const findOneNoPrimary = (
     table: string,
     id_1: number,
@@ -302,7 +291,7 @@ export const Crud = (): Crud => {
     field_1: string,
     field_2: string
   ): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database(table)
         .where(`${field_1}`, Number(id_1))
         .andWhere(`${field_2}`, Number(id_2))
@@ -310,65 +299,60 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch(() => {
-          throw new Error("could not find one");
+          rejects("could not find one");
         });
     });
   };
 
-  /**
-   * Update an object in a table.
-   * @param table Table to update object.
-   * @param id Id of the object.
-   * @param content Content to update the object.
-   * @returns Query result.
-   */
   const update = <Type>(
     table: string,
     id: number,
-    content: Type
+    content: Type,
+    forceRollBack: boolean = false
   ): Promise<number> => {
-    return new Promise(async (resolve) => {
-      await database(table)
-        .where("id", Number(id))
-        .update(content)
-        .then((res) => {
-          resolve(res);
-        })
-        .catch(() => {
-          throw new Error("could not update");
-        });
+    return new Promise(async (resolve, rejects) => {
+      await database.transaction((t) => {
+        t(table)
+          .where("id", Number(id))
+          .update(content)
+          .then((res) => {
+            if (forceRollBack) t.rollback();
+            else t.commit();
+            resolve(res);
+          })
+          .catch(() => {
+            t.rollback();
+            rejects("could not update");
+          });
+      });
     });
   };
 
-  /**
-   * Update an object in a table.
-   * @param table Table to update object.
-   * @param id_1 First id of the object.
-   * @param id_2 Second id of the object.
-   * @param field_1 First field to compare of the object.
-   * @param field_2 First field to compare of the object.
-   * @param content Content to update the object.
-   * @returns Query result.
-   */
   const updateNoPrimary = <Type>(
     table: string,
     id_1: number,
     id_2: number,
     field_1: string,
     field_2: string,
-    content: Type
+    content: Type,
+    forceRollBack: boolean = false
   ): Promise<number> => {
-    return new Promise(async (resolve) => {
-      await database(table)
-        .where(`${field_1}`, Number(id_1))
-        .andWhere(`${field_2}`, Number(id_2))
-        .update(content)
-        .then((res) => {
-          resolve(res);
-        })
-        .catch(() => {
-          throw new Error("could not update");
-        });
+    return new Promise(async (resolve, rejects) => {
+      await database.transaction((t) => {
+        t(table)
+          .where(`${field_1}`, Number(id_1))
+          .andWhere(`${field_2}`, Number(id_2))
+          .update(content)
+          .then((res) => {
+            if (forceRollBack) t.rollback();
+            else t.commit();
+            resolve(res);
+          })
+          .catch(() => {
+            t.rollback();
+            rejects("could not update");
+          });
+      });
     });
   };
 
@@ -377,7 +361,7 @@ export const Crud = (): Crud => {
    * @returns All objects from serviceOrder table.
    */
   const findServiceOrder = (): Promise<any> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database("ServiceOrder")
         .select(
           "c.name",
@@ -395,7 +379,7 @@ export const Crud = (): Crud => {
         .join("Phone", "ServiceOrder.idPhone", "Phone.id")
         .then((res) => resolve(res))
         .catch(() => {
-          throw new Error("could not update");
+          rejects("could not update");
         });
     });
   };
@@ -406,7 +390,7 @@ export const Crud = (): Crud => {
    * @returns All objects from serviceOrder table.
    */
   const findOneServiceOrder = (id: Number): Promise<any> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database("ServiceOrder")
         .select(
           "c.name",
@@ -424,8 +408,8 @@ export const Crud = (): Crud => {
         .join("Phone", "ServiceOrder.idPhone", "Phone.id")
         .where({ "ServiceOrder.id": Number(id) })
         .then((res) => resolve(res))
-        .catch((Err) => {
-          throw new Error("could not update");
+        .catch(() => {
+          rejects("could not update");
         });
     });
   };
@@ -436,14 +420,14 @@ export const Crud = (): Crud => {
    * @returns All objects from service table by OrderService.
    */
   const findServiceByOrderService = (id: number): Promise<any> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database("ServiceOrderHasService")
         .select("Service.type", "Service.price", "Service.id")
         .join("Service", "ServiceOrderHasService.idService", "Service.id")
         .where({ "ServiceOrderHasService.idServiceOrder": Number(id) })
         .then((res) => resolve(res))
         .catch(() => {
-          throw new Error("could not update");
+          rejects("could not update");
         });
     });
   };
@@ -453,14 +437,14 @@ export const Crud = (): Crud => {
    * @returns All objects from service table order by model.
    */
   const findRankServiceByModel = (): Promise<any> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database
         .raw(
           "select *, (select count(*) from ServiceOrder where service.id = serviceorder.idClient) as OS from Service order by os desc limit 5;"
         )
         .then((res) => resolve(res))
         .catch(() => {
-          throw new Error("could not update");
+          rejects("could not update");
         });
     });
   };
@@ -474,7 +458,7 @@ export const Crud = (): Crud => {
     beginDate: string,
     endDate: string
   ): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database("ServiceOrder")
         .where("beginDate", ">=", beginDate)
         .andWhere("endDate", "<=", endDate)
@@ -482,7 +466,7 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch((err) => {
-          throw new Error("could not get total service orders by period");
+          rejects("could not get total service orders by period");
         });
     });
   };
@@ -492,7 +476,7 @@ export const Crud = (): Crud => {
    * @returns ServiceOrders.
    */
   const totalServiceOrderByClient = (): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database
         .raw(
           "SELECT Client.name AS Nome, (SELECT COUNT(*) FROM ServiceOrder WHERE Client.id = ServiceOrder.idClient) AS OS FROM Client"
@@ -500,8 +484,8 @@ export const Crud = (): Crud => {
         .then((res) => {
           resolve(res);
         })
-        .catch((err) => {
-          throw new Error("could not get total service orders by client");
+        .catch(() => {
+          rejects("could not get total service orders by client");
         });
     });
   };
@@ -516,7 +500,7 @@ export const Crud = (): Crud => {
     beginDate: string,
     endDate: string
   ): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database
         .raw(
           `SELECT *, (SELECT COUNT(*) FROM ServiceOrderHasService INNER JOIN ServiceOrder ON ServiceOrderHasService.idServiceOrder = ServiceOrder.id WHERE Service.id = ServiceOrderHasService.idService AND ServiceOrder.beginDate BETWEEN '${beginDate}' AND '${endDate}' AND ServiceOrder.endDate IS NOT NULL)*Service.price AS Rendimento from Service;`
@@ -525,7 +509,7 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch((err) => {
-          throw new Error("could not get total value from service by period");
+          rejects("could not get total value from service by period");
         });
     });
   };
@@ -540,7 +524,7 @@ export const Crud = (): Crud => {
     beginDate: string,
     endDate: string
   ): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database
         .raw(
           `SELECT AVG((SELECT COUNT(*) FROM ServiceOrderHasService INNER JOIN ServiceOrder ON ServiceOrderHasService.idServiceOrder = ServiceOrder.id WHERE Service.id = ServiceOrderHasService.idService AND ServiceOrder.beginDate BETWEEN '${beginDate}' AND '${endDate}' AND ServiceOrder.endDate IS NULL)*Service.price) AS Media_Rendimento from Service;`
@@ -549,9 +533,7 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch((err) => {
-          throw new Error(
-            "could not get average value from service order by period"
-          );
+          rejects("could not get average value from service order by period");
         });
     });
   };
@@ -566,7 +548,7 @@ export const Crud = (): Crud => {
     beginDate: string,
     endDate: string
   ): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database
         .raw(
           `SELECT SUM((SELECT COUNT(*) FROM ServiceOrderHasService INNER JOIN ServiceOrder ON ServiceOrderHasService.idServiceOrder = ServiceOrder.id WHERE Service.id = ServiceOrderHasService.idService AND ServiceOrder.beginDate BETWEEN '${beginDate}' AND '${endDate}' AND ServiceOrder.endDate IS NULL)) * 1.0 / (select count(*) from ServiceOrder where beginDate between '${beginDate}' AND '${endDate}') AS media_servicos from Service;`
@@ -575,7 +557,7 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch((err) => {
-          throw new Error(
+          rejects(
             "could not get average quantity from service order by period"
           );
         });
@@ -587,7 +569,7 @@ export const Crud = (): Crud => {
    * @returns Average service duration.
    */
   const averageServiceDuration = (): Promise<any[]> => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, rejects) => {
       await database
         .raw(
           `SELECT AVG(((JulianDay(ServiceOrder.endDate) - JulianDay(ServiceOrder.beginDate)))) AS media, res.idService FROM ServiceOrder INNER JOIN (SELECT * FROM Service INNER JOIN ServiceOrderHasService ON Service.id = ServiceOrderHasService.idService) AS res ON ServiceOrder.id = res.idServiceOrder WHERE ServiceOrder.endDate IS NOT NULL GROUP BY res.idService;`
@@ -596,7 +578,7 @@ export const Crud = (): Crud => {
           resolve(res);
         })
         .catch((err) => {
-          throw new Error(
+          rejects(
             "could not get average quantity from service order by period"
           );
         });
