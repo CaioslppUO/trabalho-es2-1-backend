@@ -22,7 +22,11 @@ export interface Crud {
    * @param forceRollBack Force the removed object to suffer rollback.
    * @returns Query result.
    */
-  remove: (table: string, id: number) => Promise<number>;
+  remove: (
+    table: string,
+    id: number,
+    forceRollBack?: boolean
+  ) => Promise<number>;
 
   /**
    * Remove an object from a table.
@@ -39,7 +43,8 @@ export interface Crud {
     id_1: number,
     id_2: number,
     field_1: string,
-    field_2: string
+    field_2: string,
+    forceRollBack?: boolean
   ) => Promise<number>;
 
   /**
@@ -82,7 +87,12 @@ export interface Crud {
    * @param forceRollBack Force the updated object to suffer rollback.
    * @returns Query result.
    */
-  update: <Type>(table: string, id: number, content: Type) => Promise<number>;
+  update: <Type>(
+    table: string,
+    id: number,
+    content: Type,
+    forceRollBack?: boolean
+  ) => Promise<number>;
 
   /**
    * Update an object in a table.
@@ -101,7 +111,8 @@ export interface Crud {
     id_2: number,
     field_1: string,
     field_2: string,
-    content: Type
+    content: Type,
+    forceRollBack?: boolean
   ) => Promise<number>;
 
   /**

@@ -15,16 +15,23 @@ export interface Client {
    * @param name Client name.
    * @param email Client email.
    * @param cpf Client cpf.
+   * @param forceRollBack Force the insert to suffer rollback.
    * @returns The id of the inserted Client.
    */
-  insert: (name: string, email: string, cpf: string) => Promise<{ id: number }>;
+  insert: (
+    name: string,
+    email: string,
+    cpf: string,
+    forceRollBack?: boolean
+  ) => Promise<{ id: number }>;
 
   /**
    * Remove a Client from the database.
    * @param id Client id
+   * @param forceRollBack Force the remove to suffer rollback.
    * @returns True if were able to remove.
    */
-  remove: (id: number) => Promise<boolean>;
+  remove: (id: number, forceRollBack?: boolean) => Promise<boolean>;
 
   /**
    * Return every Client in the database.
@@ -45,30 +52,26 @@ export interface Client {
    * @param name Client name.
    * @param email Client email.
    * @param cpf Client cpf.
+   * @param forceRollBack Force the update to suffer rollback.
    * @returns True if could update the Client.
    */
   update: (
     id: number,
     name: string,
     email: string,
-    cpf: string
-  ) => Promise<boolean>;
+    cpf: string,
+    forceRollBack?: boolean
+  ) => Promise<number>;
 }
 
 export const Client = (): Client => {
   const crud = Crud();
 
-  /**
-   * Insert a new Client in the database.
-   * @param name Client name.
-   * @param email Client email.
-   * @param cpf Client cpf.
-   * @returns The id of the inserted Client.
-   */
   const insert = (
     name: string,
     email: string,
-    cpf: string
+    cpf: string,
+    forceRollBack: boolean = false
   ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
       const re = /\S+@\S+\.\S+/;
@@ -81,7 +84,7 @@ export const Client = (): Client => {
       }
       let new_Client: ClientObject = { name, email, cpf };
       crud
-        .insert("Client", new_Client)
+        .insert("Client", new_Client, forceRollBack)
         .then((res) => {
           resolve(res);
         })
@@ -91,15 +94,13 @@ export const Client = (): Client => {
     });
   };
 
-  /**
-   * Remove a Client from the database.
-   * @param id Client id
-   * @returns True if were able to remove.
-   */
-  const remove = (id: number): Promise<boolean> => {
+  const remove = (
+    id: number,
+    forceRollBack: boolean = false
+  ): Promise<boolean> => {
     return new Promise((resolve, rejects) => {
       crud
-        .remove("Client", id)
+        .remove("Client", id, forceRollBack)
         .then(() => {
           resolve(true);
         })
@@ -109,10 +110,6 @@ export const Client = (): Client => {
     });
   };
 
-  /**
-   * Return every Client in the database.
-   * @returns Clients in the database.
-   */
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       crud
@@ -126,11 +123,6 @@ export const Client = (): Client => {
     });
   };
 
-  /**
-   * Return a Client from the database.
-   * @param id Client id.
-   * @returns Client.
-   */
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       crud
@@ -144,26 +136,19 @@ export const Client = (): Client => {
     });
   };
 
-  /**
-   * Update an Client in the database.
-   * @param id Client id.
-   * @param name Client name.
-   * @param email Client email.
-   * @param cpf Client cpf.
-   * @returns True if could update the Client.
-   */
   const update = (
     id: number,
     name: string,
     email: string,
-    cpf: string
-  ): Promise<boolean> => {
+    cpf: string,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise((resolve, rejects) => {
       let new_Client: ClientObject = { name, email, cpf };
       crud
-        .update("Client", id, new_Client)
-        .then(() => {
-          resolve(true);
+        .update("Client", id, new_Client, forceRollBack)
+        .then((res) => {
+          resolve(res);
         })
         .catch((err) => {
           rejects(err);

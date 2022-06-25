@@ -20,21 +20,24 @@ export interface ServiceOrder {
    * @param idClient Id of the Client.
    * @param idPhone Id of the Phone.
    * @param beginDate Creation date of the service order.
+   * @param forceRollBack Force the insert to suffer rollback.
    * @returns The id of the inserted ServiceOrder.
    */
   insert: (
     idClient: number,
     idPhone: number,
     services: Array<Number>,
-    beginDate: string
+    beginDate: string,
+    forceRollBack?: boolean
   ) => Promise<{ id: number }>;
 
   /**
    * Remove a ServiceOrder from the database.
    * @param id ServiceOrder id
+   * @param forceRollBack Force the remove to suffer rollback.
    * @returns True if were able to remove.
    */
-  remove: (id: number) => Promise<boolean>;
+  remove: (id: number, forceRollBack?: boolean) => Promise<number>;
 
   /**
    * Return every ServiceOrder in the database.
@@ -55,14 +58,16 @@ export interface ServiceOrder {
    * @param idClient New Client id.
    * @param idPhone New Phone id.
    * @param beginDate New creation date.
+   * @param forceRollBack Force the update to suffer rollback.
    * @returns True if could update the ServiceOrder.
    */
   update: (
     id: number,
     idClient: number,
     idPhone: number,
-    beginDate: string
-  ) => Promise<boolean>;
+    beginDate: string,
+    forceRollBack?: boolean
+  ) => Promise<number>;
 
   /**
    * Return all ServiceOrders between beginDate and endDate.
@@ -124,18 +129,12 @@ export interface ServiceOrder {
 export const ServiceOrder = (): ServiceOrder => {
   const crud = Crud();
 
-  /**
-   * Insert a new ServiceOrder in the database.
-   * @param idClient Id of the Client.
-   * @param idPhone Id of the Phone.
-   * @param beginDate Creation date of the service order.
-   * @returns The id of the inserted ServiceOrder.
-   */
   const insert = async (
     idClient: number,
     idPhone: number,
     services: Array<Number>,
-    beginDate: string
+    beginDate: string,
+    forceRollBack: boolean = false
   ): Promise<{ id: number }> => {
     return new Promise(async (resolve, rejects) => {
       let phone = Phone();
@@ -155,17 +154,26 @@ export const ServiceOrder = (): ServiceOrder => {
         rejects("could not insert, invalid service");
       }
 
-      let { id } = await crud.insert("ServiceOrder", {
-        idClient,
-        idPhone,
-        beginDate,
-      });
+      let { id } = await crud.insert(
+        "ServiceOrder",
+        {
+          idClient,
+          idPhone,
+          beginDate,
+        },
+        forceRollBack
+      );
+
       try {
         for (let i = 0; i < services.length; i++) {
-          await crud.insert("serviceOrderHasService", {
-            idServiceOrder: Number(id),
-            idService: services[i],
-          });
+          await crud.insert(
+            "serviceOrderHasService",
+            {
+              idServiceOrder: Number(id),
+              idService: services[i],
+            },
+            forceRollBack
+          );
         }
       } catch (error) {
         rejects(error);
@@ -174,21 +182,19 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Remove a ServiceOrder from the database.
-   * @param id ServiceOrder id
-   * @returns True if were able to remove.
-   */
-  const remove = (id: number): Promise<boolean> => {
+  const remove = (
+    id: number,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise((resolve, rejects) => {
       crud
         .findOne("ServiceOrder", id)
         .then((res) => {
           res[0].canceled = true;
           crud
-            .update("ServiceOrder", id, res[0])
-            .then(() => {
-              resolve(true);
+            .update("ServiceOrder", id, res[0], forceRollBack)
+            .then((res) => {
+              resolve(res);
             })
             .catch((err) => {
               rejects(err);
@@ -200,10 +206,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return every ServiceOrder in the database.
-   * @returns ServiceOrders in the database.
-   */
   const find = (): Promise<any[]> => {
     return new Promise(async (resolve, rejects) => {
       try {
@@ -221,11 +223,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return a ServiceOrder from the database.
-   * @param id ServiceOrder id.
-   * @returns ServiceOrder.
-   */
   const findOne = (id: number): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
       crud
@@ -250,20 +247,13 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Update an ServiceOrder in the database.
-   * @param id ServiceOrder id.
-   * @param idClient New Client id.
-   * @param idPhone New Phone id.
-   * @param beginDate New creation date.
-   * @returns True if could update the ServiceOrder.
-   */
   const update = (
     id: number,
     idClient: number,
     idPhone: number,
-    beginDate: string
-  ): Promise<boolean> => {
+    beginDate: string,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise((resolve, rejects) => {
       let new_ServiceOrder: ServiceOrderObject = {
         idClient,
@@ -271,9 +261,9 @@ export const ServiceOrder = (): ServiceOrder => {
         beginDate,
       };
       crud
-        .update("ServiceOrder", id, new_ServiceOrder)
-        .then(() => {
-          resolve(true);
+        .update("ServiceOrder", id, new_ServiceOrder, forceRollBack)
+        .then((res) => {
+          resolve(res);
         })
         .catch((err) => {
           rejects(err);
@@ -281,12 +271,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return all ServiceOrders between beginDate and endDate.
-   * @param beginDate First Date.
-   * @param endDate Last Date.
-   * @returns ServiceOrders between beginDate and endDate
-   */
   const getTotalServiceOrderByPeriod = (
     beginDate: string,
     endDate: string
@@ -303,10 +287,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return all ServiceOrders by client.
-   * @returns ServiceOrders.
-   */
   const getTotalServiceOrderByClient = (): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
       crud
@@ -320,12 +300,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return the total value from a service between a period.
-   * @param beginDate First date.
-   * @param endDate Second date.
-   * @returns Total value from a service between a period
-   */
   const getTotalValueFromServicesByPeriod = (
     beginDate: string,
     endDate: string
@@ -342,12 +316,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return the average value from a service between a period.
-   * @param beginDate First date.
-   * @param endDate Second date.
-   * @returns Average value from a service between a period
-   */
   const getAverageValueFromServicesOrderByPeriod = (
     beginDate: string,
     endDate: string
@@ -364,12 +332,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return the average quantity from a service order between a period.
-   * @param beginDate First date.
-   * @param endDate Second date.
-   * @returns Average quantity from a service order between a period
-   */
   const getAverageServiceOrderQuantityByPeriod = (
     beginDate: string,
     endDate: string
@@ -386,10 +348,6 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
-  /**
-   * Return the average service duration.
-   * @returns Average service duration.
-   */
   const getAverageServiceDuration = (): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
       crud

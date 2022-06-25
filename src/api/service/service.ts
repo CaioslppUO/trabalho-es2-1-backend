@@ -13,16 +13,22 @@ export interface Service {
    * Insert a new Service in the database.
    * @param type Type of the Service.
    * @param price Price of the service.
+   * @param forceRollBack Force the insert to suffer rollback.
    * @returns The id of the inserted Service.
    */
-  insert: (type: string, price: number) => Promise<{ id: number }>;
+  insert: (
+    type: string,
+    price: number,
+    forceRollBack?: boolean
+  ) => Promise<{ id: number }>;
 
   /**
    * Remove a Service from the database.
    * @param id Service id
+   * @param forceRollBack Force the remove to suffer rollback.
    * @returns True if were able to remove.
    */
-  remove: (id: number) => Promise<boolean>;
+  remove: (id: number, forceRollBack?: boolean) => Promise<number>;
 
   /**
    * Return every Service in the database.
@@ -42,9 +48,15 @@ export interface Service {
    * @param id Service id.
    * @param type New Service content.
    * @param price New Service price.
+   * @param forceRollBack Force the update to suffer rollback.
    * @returns True if could update the Service.
    */
-  update: (id: number, type: string, price: number) => Promise<boolean>;
+  update: (
+    id: number,
+    type: string,
+    price: number,
+    forceRollBack?: boolean
+  ) => Promise<number>;
 
   findRankServiceByModel: () => Promise<any>;
 }
@@ -52,20 +64,18 @@ export interface Service {
 export const Service = (): Service => {
   const crud = Crud();
 
-  /**
-   * Insert a new Service in the database.
-   * @param type Type of the Service.
-   * @param price Price of the service.
-   * @returns The id of the inserted Service.
-   */
-  const insert = (type: string, price: number): Promise<{ id: number }> => {
+  const insert = (
+    type: string,
+    price: number,
+    forceRollBack: boolean = false
+  ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
       if (type.length <= 0) {
         rejects("service type must not be empty");
       }
       let new_service: ServiceObject = { type, price };
       crud
-        .insert("Service", new_service)
+        .insert("Service", new_service, forceRollBack)
         .then((res) => {
           resolve(res);
         })
@@ -80,16 +90,19 @@ export const Service = (): Service => {
    * @param id Service id
    * @returns True if were able to remove.
    */
-  const remove = (id: number): Promise<boolean> => {
+  const remove = (
+    id: number,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise((resolve, rejects) => {
       crud
         .findOne("Service", id)
         .then((res) => {
           res[0].deleted = true;
           crud
-            .update("Service", id, res[0])
-            .then(() => {
-              resolve(true);
+            .update("Service", id, res[0], forceRollBack)
+            .then((res) => {
+              resolve(res);
             })
             .catch((err) => {
               rejects(err);
@@ -146,14 +159,15 @@ export const Service = (): Service => {
   const update = (
     id: number,
     type: string,
-    price: number
-  ): Promise<boolean> => {
+    price: number,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise(async (resolve, rejects) => {
       let new_service: ServiceObject = { type, price };
       crud
-        .update("Service", id, new_service)
-        .then(() => {
-          resolve(true);
+        .update("Service", id, new_service, forceRollBack)
+        .then((res) => {
+          resolve(res);
         })
         .catch((err) => {
           rejects(err);

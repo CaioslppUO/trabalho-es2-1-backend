@@ -11,16 +11,18 @@ export interface Phone {
   /**
    * Insert a new Phone in the database.
    * @param model Model of the phone.
+   * @param forceRollBack Force the insert to suffer rollback.
    * @returns The id of the inserted phone.
    */
-  insert: (model: string) => Promise<{ id: number }>;
+  insert: (model: string, forceRollBack?: boolean) => Promise<{ id: number }>;
 
   /**
    * Remove a Phone from the database.
    * @param id Phone id
+   * @param forceRollBack Force the remove to suffer rollback.
    * @returns True if were able to remove.
    */
-  remove: (id: number) => Promise<boolean>;
+  remove: (id: number, forceRollBack?: boolean) => Promise<number>;
 
   /**
    * Return every Phone in the database.
@@ -39,27 +41,30 @@ export interface Phone {
    * Update an Phone in the database.
    * @param id Phone id.
    * @param model New Phone content.
+   * @param forceRollBack Force the update to suffer rollback.
    * @returns True if could update the Phone.
    */
-  update: (id: number, model: string) => Promise<boolean>;
+  update: (
+    id: number,
+    model: string,
+    forceRollBack?: boolean
+  ) => Promise<number>;
 }
 
 export const Phone = (): Phone => {
   const crud = Crud();
 
-  /**
-   * Insert a new Phone in the database.
-   * @param model Model of the phone.
-   * @returns The id of the inserted phone.
-   */
-  const insert = (model: string): Promise<{ id: number }> => {
+  const insert = (
+    model: string,
+    forceRollBack: boolean = false
+  ): Promise<{ id: number }> => {
     return new Promise((resolve, rejects) => {
       if (model.length <= 0) {
         rejects("could not insert");
       }
       let new_phone: PhoneObject = { model };
       crud
-        .insert("Phone", new_phone)
+        .insert("Phone", new_phone, forceRollBack)
         .then((res) => {
           resolve(res);
         })
@@ -69,17 +74,15 @@ export const Phone = (): Phone => {
     });
   };
 
-  /**
-   * Remove a Phone from the database.
-   * @param id Phone id
-   * @returns True if were able to remove.
-   */
-  const remove = (id: number): Promise<boolean> => {
+  const remove = (
+    id: number,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise((resolve, rejects) => {
       crud
-        .remove("Phone", id)
-        .then(() => {
-          resolve(true);
+        .remove("Phone", id, forceRollBack)
+        .then((res) => {
+          resolve(res);
         })
         .catch((err) => {
           rejects(err);
@@ -87,10 +90,6 @@ export const Phone = (): Phone => {
     });
   };
 
-  /**
-   * Return every Phone in the database.
-   * @returns Phones in the database.
-   */
   const find = (): Promise<any> => {
     return new Promise((resolve, rejects) => {
       crud
@@ -104,11 +103,6 @@ export const Phone = (): Phone => {
     });
   };
 
-  /**
-   * Return a Phone from the database.
-   * @param id Phone id.
-   * @returns Phone.
-   */
   const findOne = (id: number): Promise<any> => {
     return new Promise((resolve, rejects) => {
       crud
@@ -122,19 +116,17 @@ export const Phone = (): Phone => {
     });
   };
 
-  /**
-   * Update an Phone in the database.
-   * @param id Phone id.
-   * @param model New Phone content.
-   * @returns True if could update the Phone.
-   */
-  const update = (id: number, model: string): Promise<boolean> => {
+  const update = (
+    id: number,
+    model: string,
+    forceRollBack: boolean = false
+  ): Promise<number> => {
     return new Promise(async (resolve, rejects) => {
       let new_phone: PhoneObject = { model };
       crud
-        .update("Phone", id, new_phone)
-        .then(() => {
-          resolve(true);
+        .update("Phone", id, new_phone, forceRollBack)
+        .then((res) => {
+          resolve(res);
         })
         .catch((err) => {
           rejects(err);
