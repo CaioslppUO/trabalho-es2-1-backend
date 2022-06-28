@@ -1,9 +1,7 @@
 import { Crud } from "../knex/crud";
 import { Phone } from "../phone/phone";
 import { Client } from "../client/client";
-import { resolve } from "path";
 import { Service } from "../service/service";
-import { type } from "os";
 
 /**
  * Database ServiceOrder interface.
@@ -78,7 +76,7 @@ export interface ServiceOrder {
   getTotalServiceOrderByPeriod: (
     beginDate: string,
     endDate: string
-  ) => Promise<any[]>;
+  ) => Promise<number>;
 
   /**
    * Return all ServiceOrders by client.
@@ -274,12 +272,12 @@ export const ServiceOrder = (): ServiceOrder => {
   const getTotalServiceOrderByPeriod = (
     beginDate: string,
     endDate: string
-  ): Promise<any[]> => {
+  ): Promise<number> => {
     return new Promise((resolve, rejects) => {
       crud
         .totalServiceOrderByPeriod(beginDate, endDate)
         .then((res) => {
-          resolve(res);
+          resolve(res.length);
         })
         .catch((err) => {
           rejects(err);
@@ -352,8 +350,20 @@ export const ServiceOrder = (): ServiceOrder => {
     return new Promise((resolve, rejects) => {
       crud
         .averageServiceDuration()
-        .then((res) => {
-          resolve(res);
+        .then(async (res) => {
+          let data: any[] = [];
+          for (let i = 0; i < res.length; i++) {
+            let service = await crud
+              .findOne("Service", res[i].idService)
+              .catch((err) => {
+                rejects(err);
+              });
+            data.push({
+              media: res[i].media,
+              service: service,
+            });
+          }
+          resolve(data);
         })
         .catch((err) => {
           rejects(err);

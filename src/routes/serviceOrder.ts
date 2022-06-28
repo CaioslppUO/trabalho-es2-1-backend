@@ -190,7 +190,7 @@ router.get("/totalServiceOrderByPeriod", jsonParser, (req: any, res: any) => {
     return serviceOrder
       .getTotalServiceOrderByPeriod(req.body.beginDate, req.body.endDate)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
