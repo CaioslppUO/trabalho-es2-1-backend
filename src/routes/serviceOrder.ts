@@ -4,8 +4,10 @@ var bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 
 import { ServiceOrder } from "../api/serviceOrder/serviceOrder";
+import { ServiceOrderHasService } from "../api/serviceOrderHasService/serviceOrderHasService";
 
 let serviceOrder = ServiceOrder();
+let serviceOrderHasService = ServiceOrderHasService();
 
 router.get("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
@@ -62,10 +64,13 @@ router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
 
 router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
-    if (!req.body.id) return res.status(400).send("Could not id");
-    if (!req.body.idClient) return res.status(400).send("Could not idClient");
-    if (!req.body.idPhone) return res.status(400).send("Could not idPhone");
-    if (!req.body.beginDate) return res.status(400).send("Could not beginDate");
+    if (!req.body.id) return res.status(400).send("invalid id");
+    if (!req.body.idClient) return res.status(400).send("invalid idClient");
+    if (!req.body.idPhone) return res.status(400).send("invalid idPhone");
+    if (!req.body.beginDate) return res.status(400).send("invalid beginDate");
+    if (!req.body.idService) return res.status(400).send("invalid idService");
+    if (!req.body.oldIdService)
+      return res.status(400).send("invalid oldIdService");
     return serviceOrder
       .update(
         req.body.id,
@@ -74,7 +79,22 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
         req.body.beginDate
       )
       .then((data) => {
-        return res.status(200).send(data);
+        serviceOrderHasService
+          .update(
+            req.body.id,
+            req.body.oldIdService,
+            req.body.id,
+            req.body.idService
+          )
+          .then((data2) => {
+            return res.status(200).send(data2);
+          })
+          .catch((err) => {
+            return res.status(400).send({ err });
+          });
+      })
+      .catch((err) => {
+        return res.status(400).send({ err });
       });
   } catch (error) {
     return res.status(400).send({ error });
