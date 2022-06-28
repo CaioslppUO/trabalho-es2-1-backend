@@ -68,9 +68,9 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
     if (!req.body.idClient) return res.status(400).send("invalid idClient");
     if (!req.body.idPhone) return res.status(400).send("invalid idPhone");
     if (!req.body.beginDate) return res.status(400).send("invalid beginDate");
-    if (!req.body.idService) return res.status(400).send("invalid idService");
-    if (!req.body.oldIdService)
-      return res.status(400).send("invalid oldIdService");
+    if (!req.body.idsService) return res.status(400).send("invalid idsService");
+    if (!req.body.oldIdsService)
+      return res.status(400).send("invalid oldIdsService");
     return serviceOrder
       .update(
         req.body.id,
@@ -78,26 +78,26 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
         req.body.idPhone,
         req.body.beginDate
       )
-      .then((data) => {
-        serviceOrderHasService
-          .update(
+      .then(async (data) => {
+        for (let i = 0; i < req.body.oldIdsService.length; i++) {
+          await serviceOrderHasService.remove(
             req.body.id,
-            req.body.oldIdService,
+            req.body.oldIdsService[i]
+          );
+        }
+        for (let i = 0; i < req.body.idsService.length; i++) {
+          await serviceOrderHasService.insert(
             req.body.id,
-            req.body.idService
-          )
-          .then((data2) => {
-            return res.status(200).send(data2);
-          })
-          .catch((err) => {
-            return res.status(400).send({ err });
-          });
+            req.body.idsService[i]
+          );
+        }
+        return res.status(200).json(data);
       })
       .catch((err) => {
-        return res.status(400).send({ err });
+        return res.status(400).send(err);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
