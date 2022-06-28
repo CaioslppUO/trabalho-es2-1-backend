@@ -1,7 +1,9 @@
 const express = require("express");
 export const router = express.Router();
-var bodyParser = require("body-parser");
-var jsonParser = bodyParser.json();
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
+const multer = require("multer");
+const multerConfig = require("../config/multer");
 
 import { Phone } from "../api/phone/phone";
 
@@ -49,6 +51,21 @@ router.post("/phone", jsonParser, (req: any, res: any) => {
     return res.status(400).send({ error });
   }
 });
+
+router.post(
+  "/phones",
+  multer(multerConfig).single("file"),
+  (req: any, res: any) => {
+    try {
+      if (!req.file) return res.status(400).send("Could not file");
+      return phone.insertFile(req.file).then((data) => {
+        return res.status(200).send(data);
+      });
+    } catch (error) {
+      return res.status(400).send({ error });
+    }
+  }
+);
 
 router.put("/phone", jsonParser, (req: any, res: any) => {
   try {

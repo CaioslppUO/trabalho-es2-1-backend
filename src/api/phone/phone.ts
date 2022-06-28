@@ -49,6 +49,12 @@ export interface Phone {
     model: string,
     forceRollBack?: boolean
   ) => Promise<number>;
+
+  /**
+   * @param file file with all phones to be insert.
+   * @returns True if insert all phones.
+   */
+  insertFile: (file: any) => Promise<boolean>;
 }
 
 export const Phone = (): Phone => {
@@ -134,7 +140,15 @@ export const Phone = (): Phone => {
     });
   };
 
+  const insertFile = (file: any): Promise<boolean> => {
+    return new Promise(async (resolve, rejects) => {
+      console.log(file);
+      resolve(true);
+    });
+  };
+
   return {
+    insertFile,
     insert,
     remove,
     find,

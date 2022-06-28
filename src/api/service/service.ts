@@ -59,6 +59,12 @@ export interface Service {
   ) => Promise<number>;
 
   findRankServiceByModel: () => Promise<any>;
+
+  /**
+   * @param file file with all services to be insert.
+   * @returns True if insert all services.
+   */
+  insertFile: (file: any) => Promise<boolean>;
 }
 
 export const Service = (): Service => {
@@ -192,7 +198,15 @@ export const Service = (): Service => {
     });
   };
 
+  const insertFile = (file: any): Promise<boolean> => {
+    return new Promise(async (resolve, rejects) => {
+      console.log(file);
+      resolve(true);
+    });
+  };
+
   return {
+    insertFile,
     findRankServiceByModel,
     insert,
     remove,

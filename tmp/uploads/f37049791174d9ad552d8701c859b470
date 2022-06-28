@@ -1,0 +1,49 @@
+[{
+        "serviço": "Troca de tela",
+        "descrição": "Realização de troca de telas de celulares que estão trincadas ou quebradas.",
+        "valor": 300
+    },
+
+    {
+        "serviço": "Troca de bateria",
+        "descrição": "Realização de troca de baterias de celulares.",
+        "valor": 150
+    },
+
+    {
+        "serviço": "Reparo em circuito integrado de audio",
+        "descrição": "Reparação do c.i de aúdio para o funcionamento completo de aúdio nos celulares.",
+        "valor": 500
+    },
+
+    {
+        "serviço": "Troca de camera frontal/traseira",
+        "descrição": "Realização de troca de câmera frontal e/ou traseira.",
+        "valor": null
+    },
+
+    {
+        "serviço": "Reparo em circuito integrado de imagem",
+        "descrição": "Reparação do c.i de imagem para o funcionamento completo de imagem nos celulares.",
+        "valor": 500
+    },
+
+    {
+        "serviço": "Desbloqueio",
+        "descrição": "Desbloqueio de celulares quando o usuario não lembra da senha.",
+        "valor": null
+    },
+
+    {
+        "serviço": " Reparo em circuito integrado de carga",
+        "descrição": "Reparação do c.i de carga para o funcionamento completo de carga nos celulares.",
+        "valor": -1
+    },
+
+    {
+        "serviço": "Troca de conector de carga",
+        "descrição": "Realização da troca do conector de carga quando a entrada do carregador está desgastada.",
+        "valor": -2
+    }
+
+]
