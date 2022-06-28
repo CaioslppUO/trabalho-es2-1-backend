@@ -110,7 +110,7 @@ router.get("/averageServiceDuration", jsonParser, (req: any, res: any) => {
   }
 });
 
-router.get(
+router.post(
   "/averageServiceOrderQuantityByPeriod",
   jsonParser,
   (req: any, res: any) => {
@@ -132,7 +132,7 @@ router.get(
   }
 );
 
-router.get(
+router.post(
   "/averageValueFromServiceOrderByPeriod",
   jsonParser,
   (req: any, res: any) => {
@@ -154,7 +154,7 @@ router.get(
   }
 );
 
-router.get(
+router.post(
   "/totalValueFromServicesByPeriod",
   jsonParser,
   (req: any, res: any) => {
@@ -183,7 +183,7 @@ router.get("/totalServiceOrderByClient", jsonParser, (req: any, res: any) => {
   }
 });
 
-router.get("/totalServiceOrderByPeriod", jsonParser, (req: any, res: any) => {
+router.post("/totalServiceOrderByPeriod", jsonParser, (req: any, res: any) => {
   try {
     if (!req.body.beginDate) return res.status(400).send("Could not beginDate");
     if (!req.body.endDate) return res.status(400).send("Could not endDate");
