@@ -69,8 +69,6 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
     if (!req.body.idPhone) return res.status(400).send("invalid idPhone");
     if (!req.body.beginDate) return res.status(400).send("invalid beginDate");
     if (!req.body.idsService) return res.status(400).send("invalid idsService");
-    if (!req.body.oldIdsService)
-      return res.status(400).send("invalid oldIdsService");
     return serviceOrder
       .update(
         req.body.id,
@@ -79,12 +77,13 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
         req.body.beginDate
       )
       .then(async (data) => {
-        for (let i = 0; i < req.body.oldIdsService.length; i++) {
-          await serviceOrderHasService.remove(
-            req.body.id,
-            req.body.oldIdsService[i]
-          );
-        }
+        await serviceOrderHasService.find().then(async (dt) => {
+          for (let i = 0; i < dt.length; i++) {
+            if (dt[i].idServiceOrder == req.body.id) {
+              await serviceOrderHasService.remove(req.body.id, dt[i].idService);
+            }
+          }
+        });
         for (let i = 0; i < req.body.idsService.length; i++) {
           await serviceOrderHasService.insert(
             req.body.id,
