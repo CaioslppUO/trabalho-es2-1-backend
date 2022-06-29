@@ -12,7 +12,7 @@ let serviceOrderHasService = ServiceOrderHasService();
 router.get("/serviceOrder", jsonParser, (req: any, res: any) => {
   try {
     return serviceOrder.find().then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -23,7 +23,7 @@ router.get("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");
     return serviceOrder.findOne(req.params.id).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -34,7 +34,7 @@ router.delete("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");
     return serviceOrder.remove(req.params.id).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -55,7 +55,7 @@ router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
         req.body.beginDate
       )
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
@@ -103,7 +103,7 @@ router.put("/serviceOrder", jsonParser, (req: any, res: any) => {
 router.get("/averageServiceDuration", jsonParser, (req: any, res: any) => {
   try {
     return serviceOrder.getAverageServiceDuration().then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -124,7 +124,7 @@ router.post(
           req.body.endDate
         )
         .then((data) => {
-          return res.status(200).send(data);
+          return res.status(200).json(data);
         });
     } catch (error) {
       return res.status(400).send({ error });
@@ -146,7 +146,7 @@ router.post(
           req.body.endDate
         )
         .then((data) => {
-          return res.status(200).send(data);
+          return res.status(200).json(data);
         });
     } catch (error) {
       return res.status(400).send({ error });
@@ -165,7 +165,7 @@ router.post(
       return serviceOrder
         .getTotalValueFromServicesByPeriod(req.body.beginDate, req.body.endDate)
         .then((data) => {
-          return res.status(200).send(data);
+          return res.status(200).json(data);
         });
     } catch (error) {
       return res.status(400).send({ error });
@@ -176,7 +176,7 @@ router.post(
 router.get("/totalServiceOrderByClient", jsonParser, (req: any, res: any) => {
   try {
     return serviceOrder.getTotalServiceOrderByClient().then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });

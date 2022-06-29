@@ -10,7 +10,7 @@ let serviceOrderHasService = ServiceOrderHasService();
 router.get("/serviceOrderHasService/all", jsonParser, (req: any, res: any) => {
   try {
     return serviceOrderHasService.find().then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -25,7 +25,7 @@ router.get("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
     return serviceOrderHasService
       .findOne(req.body.idServiceOrder, req.body.idService)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
@@ -40,7 +40,7 @@ router.delete("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
     return serviceOrderHasService
       .remove(req.body.idServiceOrder, req.body.idService)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
@@ -55,7 +55,7 @@ router.post("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
     return serviceOrderHasService
       .insert(req.body.idServiceOrder, req.body.idService)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
@@ -80,7 +80,7 @@ router.put("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
         req.body.newIdService
       )
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });

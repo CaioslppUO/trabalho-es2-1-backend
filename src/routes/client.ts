@@ -12,7 +12,7 @@ router.get("/client", jsonParser, (req: any, res: any) => {
     return client
       .find()
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       })
       .catch((err) => {
         console.log(err);
@@ -26,7 +26,7 @@ router.get("/client=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");
     return client.findOne(req.params.id).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -37,7 +37,7 @@ router.delete("/client=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");
     return client.remove(req.params.id).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -52,7 +52,7 @@ router.post("/client", jsonParser, (req: any, res: any) => {
     return client
       .insert(req.body.name, req.body.email, req.body.cpf)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
@@ -68,7 +68,7 @@ router.put("/client", jsonParser, (req: any, res: any) => {
     return client
       .update(req.body.id, req.body.name, req.body.email, req.body.cpf)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });

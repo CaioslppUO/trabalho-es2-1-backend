@@ -12,7 +12,7 @@ let service = Service();
 router.get("/service", jsonParser, (req: any, res: any) => {
   try {
     return service.find().then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -23,7 +23,7 @@ router.get("/service=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");
     return service.findOne(req.params.id).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -33,7 +33,7 @@ router.get("/service=:id", jsonParser, (req: any, res: any) => {
 router.get("/rankServiceByModel", jsonParser, (req: any, res: any) => {
   try {
     return service.findRankServiceByModel().then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -44,7 +44,7 @@ router.delete("/service=:id", jsonParser, (req: any, res: any) => {
   try {
     if (!req.params.id) return res.status(400).send("Could not id");
     return service.remove(req.params.id).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -56,7 +56,7 @@ router.post("/service", jsonParser, (req: any, res: any) => {
     if (!req.body.type) return res.status(400).send("Could not type");
     if (!req.body.price) return res.status(400).send("Could not price");
     return service.insert(req.body.type, req.body.price).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -67,7 +67,7 @@ router.post("/services", multer.single("file"), (req: any, res: any) => {
   try {
     if (!req.file) return res.status(400).send("Could not file");
     return service.insertFile(req.file).then((data) => {
-      return res.status(200).send(data);
+      return res.status(200).json(data);
     });
   } catch (error) {
     return res.status(400).send({ error });
@@ -82,7 +82,7 @@ router.put("/service", jsonParser, (req: any, res: any) => {
     return service
       .update(req.body.id, req.body.type, req.body.price)
       .then((data) => {
-        return res.status(200).send(data);
+        return res.status(200).json(data);
       });
   } catch (error) {
     return res.status(400).send({ error });
