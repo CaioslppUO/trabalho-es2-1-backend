@@ -1,4 +1,6 @@
 import { Crud } from "../knex/crud";
+const XLSX = require("xlsx");
+const fs = require("fs");
 
 /**
  * Database Phone interface.
@@ -142,8 +144,22 @@ export const Phone = (): Phone => {
 
   const insertFile = (file: any): Promise<boolean> => {
     return new Promise(async (resolve, rejects) => {
-      console.log(file);
-      resolve(true);
+      try {
+        const workbook = XLSX.readFile(file.path);
+        let worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        for (let i = 2; i < Number(worksheet["!ref"].split(":B")[1]); i++) {
+          if (worksheet[`B${i}`]) {
+            crud
+              .insert("Phone", { model: worksheet[`B${i}`].v }, false)
+              .catch((err) => {
+                rejects(err);
+              });
+          }
+        }
+        resolve(true);
+      } catch (error) {
+        rejects(error);
+      }
     });
   };
 

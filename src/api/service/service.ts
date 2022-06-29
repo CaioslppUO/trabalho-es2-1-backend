@@ -1,4 +1,6 @@
 import { Crud } from "../knex/crud";
+import database from "../knex/knex";
+const fetch = require("node-fetch");
 
 /**
  * Database Service interface.
@@ -200,8 +202,23 @@ export const Service = (): Service => {
 
   const insertFile = (file: any): Promise<boolean> => {
     return new Promise(async (resolve, rejects) => {
-      console.log(file);
-      resolve(true);
+      try {
+        const fileContent = require(file.path);
+        for (let i = 0; i < fileContent.length; i++) {
+          crud
+            .insert(
+              "Service",
+              { price: fileContent[i].valor, type: fileContent[i].serviço },
+              false
+            )
+            .catch((err) => {
+              rejects(err);
+            });
+        }
+        resolve(true);
+      } catch (err) {
+        rejects(err);
+      }
     });
   };
 
