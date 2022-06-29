@@ -269,11 +269,27 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  const fixDate = (date: string): string => {
+    let day, month, year;
+    year = date.split("-")[0];
+    month = date.split("-")[1];
+    day = date.split("-")[2];
+    if (month.length < 2) {
+      month = `0${month}`;
+    }
+    if (day.length < 2) {
+      day = `0${day}`;
+    }
+    return `${year}-${month}-${day}`;
+  };
+
   const getTotalServiceOrderByPeriod = (
     beginDate: string,
     endDate: string
   ): Promise<number> => {
     return new Promise((resolve, rejects) => {
+      beginDate = fixDate(beginDate);
+      endDate = fixDate(endDate);
       crud
         .totalServiceOrderByPeriod(beginDate, endDate)
         .then((res) => {
@@ -303,6 +319,8 @@ export const ServiceOrder = (): ServiceOrder => {
     endDate: string
   ): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
+      beginDate = fixDate(beginDate);
+      endDate = fixDate(endDate);
       crud
         .totalValueFromServicesByPeriod(beginDate, endDate)
         .then((res) => {
@@ -319,6 +337,8 @@ export const ServiceOrder = (): ServiceOrder => {
     endDate: string
   ): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
+      beginDate = fixDate(beginDate);
+      endDate = fixDate(endDate);
       crud
         .averageValueFromServicesOrderByPeriod(beginDate, endDate)
         .then((res) => {
@@ -335,6 +355,8 @@ export const ServiceOrder = (): ServiceOrder => {
     endDate: string
   ): Promise<any[]> => {
     return new Promise((resolve, rejects) => {
+      beginDate = fixDate(beginDate);
+      endDate = fixDate(endDate);
       crud
         .averageServiceOrderQuantityByPeriod(beginDate, endDate)
         .then((res) => {
