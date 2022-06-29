@@ -122,6 +122,8 @@ export interface ServiceOrder {
    * @returns Average service duration.
    */
   getAverageServiceDuration: () => Promise<any[]>;
+
+  prevision: () => Promise<any>;
 }
 
 export const ServiceOrder = (): ServiceOrder => {
@@ -393,6 +395,15 @@ export const ServiceOrder = (): ServiceOrder => {
     });
   };
 
+  const prevision = (): Promise<any> => {
+    return new Promise(async (resolve, rejects) => {
+      let res = await crud.prevision().catch((err: any) => {
+        rejects(err);
+      });
+      resolve(res);
+    });
+  };
+
   return {
     insert,
     remove,
@@ -405,5 +416,6 @@ export const ServiceOrder = (): ServiceOrder => {
     getAverageValueFromServicesOrderByPeriod,
     getAverageServiceOrderQuantityByPeriod,
     getAverageServiceDuration,
+    prevision,
   };
 };

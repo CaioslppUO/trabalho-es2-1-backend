@@ -195,6 +195,8 @@ export interface Crud {
    * @returns Average service duration.
    */
   averageServiceDuration: () => Promise<any[]>;
+
+  prevision: () => Promise<any>;
 }
 
 export const Crud = (): Crud => {
@@ -596,6 +598,56 @@ export const Crud = (): Crud => {
     });
   };
 
+  const prevision = (): Promise<any> => {
+    return new Promise(async (resolve, rejects) => {
+      let totals: Array<number> = [];
+      let res = await database
+        .raw("SELECT * from ServiceOrder ORDER BY id DESC LIMIT 2")
+        .catch((err) => {
+          rejects(err);
+        });
+      let months =
+        (
+          await database.raw(
+            "SELECT AVG(((JulianDay(ServiceOrder.endDate) - JulianDay(ServiceOrder.beginDate)))) AS days from ServiceOrder ORDER BY id DESC LIMIT 2"
+          )
+        )[0].days / 30;
+      console.log(months);
+      for (let i = 0; i < res.length; i++) {
+        let services = await database
+          .raw(
+            `SELECT * from ServiceOrderHasService WHERE idServiceOrder=${res[i].id};`
+          )
+          .catch((err) => {
+            rejects(err);
+          });
+        let total = 0;
+        for (let j = 0; j < services.length; j++) {
+          total += Number(
+            (
+              await database.raw(
+                `SELECT price FROM Service WHERE id=${services[j].idService}`
+              )
+            )[0].price
+          );
+        }
+        totals.push(total);
+      }
+      let result = totals[1] - totals[0];
+      let incl = result / months;
+      console.log(totals[0]);
+      console.log(incl);
+      resolve([
+        totals[1] + incl,
+        totals[1] + incl * 2,
+        totals[1] + incl * 3,
+        totals[1] + incl * 4,
+        totals[1] + incl * 5,
+        totals[1] + incl * 6,
+      ]);
+    });
+  };
+
   return {
     findRankServiceByModel,
     findServiceByOrderService,
@@ -615,5 +667,6 @@ export const Crud = (): Crud => {
     averageValueFromServicesOrderByPeriod,
     averageServiceOrderQuantityByPeriod,
     averageServiceDuration,
+    prevision,
   };
 };
