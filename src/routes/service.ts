@@ -14,8 +14,8 @@ router.get("/service", jsonParser, (req: any, res: any) => {
     return service.find().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -25,8 +25,8 @@ router.get("/service=:id", jsonParser, (req: any, res: any) => {
     return service.findOne(req.params.id).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -35,8 +35,8 @@ router.get("/rankServiceByModel", jsonParser, (req: any, res: any) => {
     return service.findRankServiceByModel().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -46,8 +46,8 @@ router.delete("/service=:id", jsonParser, (req: any, res: any) => {
     return service.remove(req.params.id).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -58,8 +58,8 @@ router.post("/service", jsonParser, (req: any, res: any) => {
     return service.insert(req.body.type, req.body.price).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -69,8 +69,8 @@ router.post("/services", multer.single("file"), (req: any, res: any) => {
     return service.insertFile(req.file).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -84,7 +84,7 @@ router.put("/service", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });

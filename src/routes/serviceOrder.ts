@@ -14,8 +14,8 @@ router.get("/serviceOrder", jsonParser, (req: any, res: any) => {
     return serviceOrder.find().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -25,8 +25,8 @@ router.get("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
     return serviceOrder.findOne(req.params.id).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -36,8 +36,8 @@ router.delete("/serviceOrder=:id", jsonParser, (req: any, res: any) => {
     return serviceOrder.remove(req.params.id).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -57,8 +57,8 @@ router.post("/serviceOrder", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -105,8 +105,8 @@ router.get("/averageServiceDuration", jsonParser, (req: any, res: any) => {
     return serviceOrder.getAverageServiceDuration().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -126,8 +126,8 @@ router.post(
         .then((data) => {
           return res.status(200).json(data);
         });
-    } catch (error) {
-      return res.status(400).send({ error });
+    } catch (err) {
+      return res.status(400).send(err);
     }
   }
 );
@@ -148,8 +148,8 @@ router.post(
         .then((data) => {
           return res.status(200).json(data);
         });
-    } catch (error) {
-      return res.status(400).send({ error });
+    } catch (err) {
+      return res.status(400).send(err);
     }
   }
 );
@@ -167,8 +167,8 @@ router.post(
         .then((data) => {
           return res.status(200).json(data);
         });
-    } catch (error) {
-      return res.status(400).send({ error });
+    } catch (err) {
+      return res.status(400).send(err);
     }
   }
 );
@@ -178,8 +178,8 @@ router.get("/totalServiceOrderByClient", jsonParser, (req: any, res: any) => {
     return serviceOrder.getTotalServiceOrderByClient().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -192,8 +192,8 @@ router.post("/totalServiceOrderByPeriod", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -202,7 +202,7 @@ router.get("/prevision", jsonParser, (req: any, res: any) => {
     return serviceOrder.prevision().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });

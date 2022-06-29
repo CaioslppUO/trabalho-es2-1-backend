@@ -17,8 +17,8 @@ router.get("/client", jsonParser, (req: any, res: any) => {
       .catch((err) => {
         console.log(err);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -28,8 +28,8 @@ router.get("/client=:id", jsonParser, (req: any, res: any) => {
     return client.findOne(req.params.id).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -39,8 +39,8 @@ router.delete("/client=:id", jsonParser, (req: any, res: any) => {
     return client.remove(req.params.id).then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -54,8 +54,8 @@ router.post("/client", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -70,7 +70,7 @@ router.put("/client", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });

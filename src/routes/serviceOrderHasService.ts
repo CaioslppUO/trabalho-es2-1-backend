@@ -12,8 +12,8 @@ router.get("/serviceOrderHasService/all", jsonParser, (req: any, res: any) => {
     return serviceOrderHasService.find().then((data) => {
       return res.status(200).json(data);
     });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -27,8 +27,8 @@ router.get("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -42,8 +42,8 @@ router.delete("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -57,8 +57,8 @@ router.post("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 
@@ -82,7 +82,7 @@ router.put("/serviceOrderHasService", jsonParser, (req: any, res: any) => {
       .then((data) => {
         return res.status(200).json(data);
       });
-  } catch (error) {
-    return res.status(400).send({ error });
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
